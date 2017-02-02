@@ -5,9 +5,11 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     [HideInInspector]
+    public bool facingRight = true;			// For determining which way the player is currently facing.
+    [HideInInspector]
     public bool jump = false;				// Condition for whether the player should jump.
 
-
+    // physics constants
     public float moveForce;              // Amount of force added to move the player left and right.
     public float maxSpeed;               // The fastest the player can travel in the x axis.
     public float jumpForce;		    	// Amount of force added when the player jumps.
@@ -15,7 +17,10 @@ public class PlayerController : MonoBehaviour {
     //private Transform groundCheck;          // A position marking where to check if the player is grounded.
     private bool grounded = false;			// Whether or not the player is grounded.
 
-    public GameObject Projectile;
+    public GameObject Projectile;           //projetile prefab
+
+    //player stats
+    private float soulCount = 0f;
 
     // Use this for initialization
     void Awake ()
@@ -63,6 +68,15 @@ public class PlayerController : MonoBehaviour {
             // ... set the player's velocity to the maxSpeed in the x axis.
             GetComponent<Rigidbody2D>().velocity = new Vector2(Mathf.Sign(GetComponent<Rigidbody2D>().velocity.x) * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
 
+        // If the input is moving the player right and the player is facing left...
+        if (h > 0 && !facingRight)
+            // ... flip the player.
+            Flip();
+        // Otherwise if the input is moving the player left and the player is facing right...
+        else if (h < 0 && facingRight)
+            // ... flip the player.
+            Flip();
+
         // If the player should jump...
         if (jump)
         {
@@ -82,8 +96,22 @@ public class PlayerController : MonoBehaviour {
     {
         var go = Instantiate(Projectile);
         var ps = go.GetComponent<Projectile>();
-        ps.Init(transform.position + transform.right * 2f, transform.right);
+        var direction = transform.right;
+        if (!facingRight)
+            direction *= -1;
+        ps.Init(transform.position + direction * 0.5f, direction);
 
+    }
+
+    void Flip()
+    {
+        // Switch the way the player is labelled as facing.
+        facingRight = !facingRight;
+
+        // Multiply the player's x local scale by -1.
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
     }
 
     // Handle Collisions
@@ -91,6 +119,12 @@ public class PlayerController : MonoBehaviour {
     {
         if (coll.gameObject.tag == "Ground")
             grounded = true;
+
+        if(coll.gameObject.tag == "loot")
+        {
+            Destroy(coll.gameObject);
+            soulCount += 1f;
+        }
          
     }
     
