@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
 
     public float health = 1f;       //enemy starting health
-    
+    public GameObject soul;                // soul prefab to drop when dead
 
 	// Use this for initialization
 	void Start () {
@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour {
 	void Update () {
 		if(health <= 0f)
         {
+            Instantiate(soul, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
 	}
