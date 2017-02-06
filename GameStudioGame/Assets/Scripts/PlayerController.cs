@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour {
      
          // Cache the horizontal input.
         float h = Input.GetAxis("Horizontal");
-        //GetComponent<Rigidbody2D>().velocity = h * maxSpeed * transform.right;
+        
 
         // If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
         if (h * GetComponent<Rigidbody2D>().velocity.x < maxSpeed)
