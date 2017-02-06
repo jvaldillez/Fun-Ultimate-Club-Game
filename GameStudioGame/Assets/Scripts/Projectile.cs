@@ -7,13 +7,14 @@ public class Projectile : MonoBehaviour {
     public float Speed = 15f;            //projectile speed
     public Vector3 direc;               //direction of projectile
 
-    // Use this for initialization
-    //void Start () {
-		
-	//}
+    
+	void Start()
+    {
+        Invoke("Destruct", 2f);
+    }
 	
-	// Update is called once per frame
-	void Update () {
+	void FixedUpdate ()
+    {
         transform.position += Speed * Time.deltaTime * direc;
 	}
 
@@ -31,9 +32,14 @@ public class Projectile : MonoBehaviour {
         //GetComponent<Rigidbody2D>().velocity = Speed * direction;
     }
 
-    void OnCollisionEnter2D(Collision2D coll)
+    void Destruct()
     {
         Destroy(gameObject);
+    }
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        Destruct();
     }
 }
 
