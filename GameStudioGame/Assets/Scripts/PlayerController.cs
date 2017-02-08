@@ -18,14 +18,16 @@ public class PlayerController : MonoBehaviour {
     private bool grounded = false;			// Whether or not the player is grounded.
 
     public GameObject Projectile;           //projetile prefab
+    public GameObject siphon;
+    private Rigidbody2D playerRb;           //cache playerRb
 
     //player stats
-    private float soulCount = 0f;
+    private int soulCount = 0;
 
     // Use this for initialization
     void Awake ()
     {
-        
+        playerRb = GetComponent<Rigidbody2D>();
         // Setting up references.
         //groundCheck = transform.Find("groundCheck");
 
@@ -46,6 +48,11 @@ public class PlayerController : MonoBehaviour {
         {
             Fire();
         }
+
+        if(Input.GetButtonDown("Fire2"))
+        {
+            SummonSiphon();
+        }
     }
 
 
@@ -55,18 +62,18 @@ public class PlayerController : MonoBehaviour {
 
      
          // Cache the horizontal input.
-        float h = Input.GetAxis("Horizontal");
+        float h = Input.GetAxisRaw("Horizontal");
         
 
         // If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
-        if (h * GetComponent<Rigidbody2D>().velocity.x < maxSpeed)
+        if (h * playerRb.velocity.x < maxSpeed)
             // ... add a force to the player.
-            GetComponent<Rigidbody2D>().AddForce(Vector2.right * h * moveForce);
+            playerRb.AddForce(Vector2.right * h * moveForce);
 
         // If the player's horizontal velocity is greater than the maxSpeed...
-        if (Mathf.Abs(GetComponent<Rigidbody2D>().velocity.x) > maxSpeed)
+        if (Mathf.Abs(playerRb.velocity.x) > maxSpeed)
             // ... set the player's velocity to the maxSpeed in the x axis.
-            GetComponent<Rigidbody2D>().velocity = new Vector2(Mathf.Sign(GetComponent<Rigidbody2D>().velocity.x) * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
+            playerRb.velocity = new Vector2(Mathf.Sign(playerRb.velocity.x) * maxSpeed, playerRb.velocity.y);
 
         // If the input is moving the player right and the player is facing left...
         if (h > 0 && !facingRight)
@@ -76,13 +83,13 @@ public class PlayerController : MonoBehaviour {
         else if (h < 0 && facingRight)
             // ... flip the player.
             Flip();
-
+            
         // If the player should jump...
         if (jump)
         {
            
             // Add a vertical force to the player.
-            GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, jumpForce));
+            playerRb.AddForce(new Vector2(0f, jumpForce));
 
             // Make sure the player can't jump again until the jump conditions from Update are satisfied.
             jump = false;
@@ -99,8 +106,17 @@ public class PlayerController : MonoBehaviour {
         var direction = transform.right;
         if (!facingRight)
             direction *= -1;
-        ps.Init(transform.position + direction * 0.5f, direction);
+        ps.Init(transform.position + direction * 0.2f, direction);
 
+    }
+
+    void SummonSiphon()
+    {
+        var tether = Instantiate(siphon).GetComponent<Siphon>();
+        var direction = transform.right;
+        if (!facingRight)
+            direction *= -1;
+        tether.Init(transform.position + direction * 0.2f, direction);
     }
 
     void Flip()
@@ -123,7 +139,7 @@ public class PlayerController : MonoBehaviour {
         if(coll.gameObject.tag == "loot")
         {
             Destroy(coll.gameObject);
-            soulCount += 1f;
+            soulCount++;
         }
          
     }

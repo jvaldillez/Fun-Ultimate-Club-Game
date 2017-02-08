@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 
-    public float health = 1f;                   // enemy starting health
+    public float health;                        // enemy starting health
     public GameObject soul;                     // soul prefab to drop when dead
     private PlayerController player;            // cached player object
-    public float DistanceThreshold = 3f;       // detection radius
+    public float DistanceThreshold = 3f;        // detection radius
     public float moveForce;                     // Amount of force added to move the player left and right.
     public float maxSpeed;                      // The fastest the player can travel in the x axis.
 
@@ -74,12 +74,14 @@ public class Enemy : MonoBehaviour {
         theScale.x *= -1;
         transform.localScale = theScale;
     }
-
-    void OnCollisionEnter2D(Collision2D coll)
+    /// <summary>
+    /// Deal damage to enemy / return true if enemy is still alive
+    /// </summary>
+    /// <param name="damage"></param>
+    public bool ApplyDamage(float damage)
     {
-        if(coll.gameObject.tag == "Projectile")
-        {
-            health -= 1f;
-        }
+        health -= damage;
+        return health > 0f;
     }
+    
 }
