@@ -46,12 +46,12 @@ public class PlayerController : MonoBehaviour {
 
         if(Input.GetButtonDown("Fire1"))
         {
-            Fire();
+            CastSpell(Projectile);
         }
 
         if(Input.GetButtonDown("Fire2"))
         {
-            SummonSiphon();
+            CastSpell(siphon);
         }
     }
 
@@ -99,24 +99,14 @@ public class PlayerController : MonoBehaviour {
     }
     
     // Fire Projectile
-    void Fire()
+    
+    void CastSpell(GameObject prefab)
     {
-        var go = Instantiate(Projectile);
-        var ps = go.GetComponent<Projectile>();
+        var spell = Instantiate(prefab).GetComponent<Ability>();
         var direction = transform.right;
         if (!facingRight)
             direction *= -1;
-        ps.Init(transform.position + direction * 0.2f, direction);
-
-    }
-
-    void SummonSiphon()
-    {
-        var tether = Instantiate(siphon).GetComponent<Siphon>();
-        var direction = transform.right;
-        if (!facingRight)
-            direction *= -1;
-        tether.Init(transform.position + direction * 0.2f, direction);
+        spell.Init(transform.position + direction * 0.2f, direction);
     }
 
     void Flip()
