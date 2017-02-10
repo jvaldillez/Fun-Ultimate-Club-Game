@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour {
 
     public GameObject Projectile;           //projetile prefab
     public GameObject siphon;
+    public GameObject ZombieHands;
     private Rigidbody2D playerRb;           //cache playerRb
 
     //player stats
@@ -52,6 +53,11 @@ public class PlayerController : MonoBehaviour {
         if(Input.GetButtonDown("Fire2"))
         {
             CastSpell(siphon);
+        }
+
+        if(Input.GetButtonDown("Fire3"))
+        {
+            CastZombieHands(ZombieHands);
         }
     }
 
@@ -107,6 +113,18 @@ public class PlayerController : MonoBehaviour {
         if (!facingRight)
             direction *= -1;
         spell.Init(transform.position + direction * 0.2f, direction);
+    }
+
+    void CastZombieHands(GameObject prefab)
+    {
+        var spell = Instantiate(prefab).GetComponent<Ability>();
+        var spell_direction = transform.up;
+        var player_direction = transform.right;
+
+        if (!facingRight)
+            player_direction *= -1;
+
+        spell.Init(transform.position + player_direction * 5f, spell_direction);
     }
 
     void Flip()
