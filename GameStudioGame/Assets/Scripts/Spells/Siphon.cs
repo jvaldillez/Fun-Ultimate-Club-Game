@@ -44,9 +44,26 @@ public class Siphon : Ability
         {
             hit = true;
             victim = coll.GetComponent<Enemy>();
+
+            //immobilize enemy
+            immobilize(victim);
+
+            //lifetime
             Invoke("Destruct", 3f);
         }
     }
-    
-   
+
+    public override void Destruct()
+    {
+        FindObjectOfType<PlayerController>().Mobile = true;
+        if (victim) victim.Mobile = true;
+        base.Destruct();
+    }
+
+    // useful
+    public static void immobilize(CharacterTemplate chr)
+    {
+        chr.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+        chr.GetComponent<CharacterTemplate>().Mobile = false;
+    }
 }
