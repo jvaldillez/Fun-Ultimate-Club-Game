@@ -53,12 +53,13 @@ public class PlayerController : CharacterTemplate
 
         if(Input.GetButtonDown("Fire2"))
         {
-            Siphon.immobilize(this);
+            Ability.immobilize(this);
             CastSpell(siphon);
         }
 
         if(Input.GetButtonDown("Fire3"))
         {
+            
             CastZombieHands(ZombieHands);
         }
     }
@@ -128,7 +129,7 @@ public class PlayerController : CharacterTemplate
         if (!facingRight)
             player_direction *= -1;
 
-        spell.Init(transform.position + player_direction * 5f, spell_direction);
+        spell.Init(transform.position + player_direction * 2f, spell_direction);
     }
 
     void Flip()
@@ -146,14 +147,16 @@ public class PlayerController : CharacterTemplate
     void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll.gameObject.tag == "Ground")
-            grounded = true;
+            grounded = true;         
+    }
 
-        if(coll.gameObject.tag == "loot")
+    void OnTriggerEnter2D(Collider2D coll)
+    {
+        if (coll.tag == "loot")
         {
             Destroy(coll.gameObject);
             soulCount++;
         }
-         
     }
     
 

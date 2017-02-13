@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class CharacterTemplate : MonoBehaviour
 {
 
-    private static bool mobile;
+    private bool mobile;
 
     /// <summary>
     /// mobile property

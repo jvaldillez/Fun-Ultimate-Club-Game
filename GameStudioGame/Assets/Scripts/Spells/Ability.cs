@@ -22,4 +22,11 @@ public abstract class Ability : MonoBehaviour {
     {
         Destroy(gameObject);
     }
+    
+    // useful
+    public static void immobilize(CharacterTemplate chr)
+    {
+        chr.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+        chr.GetComponent<CharacterTemplate>().Mobile = false;
+    }
 }
