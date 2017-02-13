@@ -8,10 +8,12 @@ public class Siphon : Ability
     private bool hit = false;       // true if hits an enemy        
     private Enemy victim;           // Enemy we hit
     private float timer;            // counts lifetime
-
+    //PlayerController player;
+    
     void Start ()
     {
-        timer = 0f;
+        
+       timer = 0f;
     }
     void Update () {
 
@@ -44,9 +46,20 @@ public class Siphon : Ability
         {
             hit = true;
             victim = coll.GetComponent<Enemy>();
+
+            //immobilize enemy
+            immobilize(victim);
+
+            //lifetime
             Invoke("Destruct", 3f);
         }
     }
+
+    public override void Destruct()
+    {
+        FindObjectOfType<PlayerController>().Mobile = true;
+        if (victim) victim.Mobile = true;
+        base.Destruct();
+    }
     
-   
 }

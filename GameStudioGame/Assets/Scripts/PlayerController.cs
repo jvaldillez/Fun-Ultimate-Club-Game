@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : CharacterTemplate {
 
     [HideInInspector]
     public bool facingRight = true;			// For determining which way the player is currently facing.
@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour {
     // Use this for initialization
     void Awake ()
     {
+        Mobile = true;
         playerRb = GetComponent<Rigidbody2D>();
         // Setting up references.
         //groundCheck = transform.Find("groundCheck");
@@ -37,70 +38,75 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-
-        // The player is grounded if a linecast to the groundcheck position hits anything on the ground layer.
-        //grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
-
-        // If the jump button is pressed and the player is grounded then the player should jump.
-        if (Input.GetButtonDown("Jump") && grounded)
-            jump = true;
-
-        if(Input.GetButtonDown("Fire1"))
+        if (Mobile)
         {
-            CastSpell(Projectile);
-        }
+            // The player is grounded if a linecast to the groundcheck position hits anything on the ground layer.
+            //grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
 
-        if(Input.GetButtonDown("Fire2"))
-        {
-            CastSpell(siphon);
-        }
+            // If the jump button is pressed and the player is grounded then the player should jump.
+            if (Input.GetButtonDown("Jump") && grounded)
+                jump = true;
 
-        if(Input.GetButtonDown("Fire3"))
-        {
-            CastZombieHands(ZombieHands);
+            if (Input.GetButtonDown("Fire1"))
+            {
+                CastSpell(Projectile);
+            }
+
+            if (Input.GetButtonDown("Fire2"))
+            {
+                Ability.immobilize(this);
+                CastSpell(siphon);
+            }
+
+            if (Input.GetButtonDown("Fire3"))
+            {
+                CastZombieHands(ZombieHands);
+            }
         }
     }
 
 
     // Used for physics updates
     void FixedUpdate()
-    {             
+    {
 
-     
-         // Cache the horizontal input.
-        float h = Input.GetAxisRaw("Horizontal");
-        
-
-        // If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
-        if (h * playerRb.velocity.x < maxSpeed)
-            // ... add a force to the player.
-            playerRb.AddForce(Vector2.right * h * moveForce);
-
-        // If the player's horizontal velocity is greater than the maxSpeed...
-        if (Mathf.Abs(playerRb.velocity.x) > maxSpeed)
-            // ... set the player's velocity to the maxSpeed in the x axis.
-            playerRb.velocity = new Vector2(Mathf.Sign(playerRb.velocity.x) * maxSpeed, playerRb.velocity.y);
-
-        // If the input is moving the player right and the player is facing left...
-        if (h > 0 && !facingRight)
-            // ... flip the player.
-            Flip();
-        // Otherwise if the input is moving the player left and the player is facing right...
-        else if (h < 0 && facingRight)
-            // ... flip the player.
-            Flip();
-            
-        // If the player should jump...
-        if (jump)
+        if (Mobile)
         {
-           
-            // Add a vertical force to the player.
-            playerRb.AddForce(new Vector2(0f, jumpForce));
+            // Cache the horizontal input.
+            float h = Input.GetAxisRaw("Horizontal");
 
-            // Make sure the player can't jump again until the jump conditions from Update are satisfied.
-            jump = false;
-            grounded = false;
-            
+
+            // If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
+            if (h * playerRb.velocity.x < maxSpeed)
+                // ... add a force to the player.
+                playerRb.AddForce(Vector2.right * h * moveForce);
+
+            // If the player's horizontal velocity is greater than the maxSpeed...
+            if (Mathf.Abs(playerRb.velocity.x) > maxSpeed)
+                // ... set the player's velocity to the maxSpeed in the x axis.
+                playerRb.velocity = new Vector2(Mathf.Sign(playerRb.velocity.x) * maxSpeed, playerRb.velocity.y);
+
+            // If the input is moving the player right and the player is facing left...
+            if (h > 0 && !facingRight)
+                // ... flip the player.
+                Flip();
+            // Otherwise if the input is moving the player left and the player is facing right...
+            else if (h < 0 && facingRight)
+                // ... flip the player.
+                Flip();
+
+            // If the player should jump...
+            if (jump)
+            {
+
+                // Add a vertical force to the player.
+                playerRb.AddForce(new Vector2(0f, jumpForce));
+
+                // Make sure the player can't jump again until the jump conditions from Update are satisfied.
+                jump = false;
+                grounded = false;
+
+            }
         }
     }
     
@@ -124,7 +130,7 @@ public class PlayerController : MonoBehaviour {
         if (!facingRight)
             player_direction *= -1;
 
-        spell.Init(transform.position + player_direction * 5f, spell_direction);
+        spell.Init(transform.position + player_direction * 2f, spell_direction);
     }
 
     void Flip()
