@@ -19,7 +19,10 @@ public class Projectile : Ability
     {        
         Destruct();
         if (coll.tag == "Enemy")
-            coll.GetComponent<Enemy>().ApplyDamage(damage);
+        {
+
+            coll.GetComponent<Enemy>().ApplyDamage(damage, transform.position, recoilForce);
+        }
     }
 }
 

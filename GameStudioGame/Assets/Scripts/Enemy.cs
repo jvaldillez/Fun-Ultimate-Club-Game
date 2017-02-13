@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class Enemy : CharacterTemplate {
 
-    public float health;                        // enemy starting health
+    //public float health;                        // enemy starting health
     public GameObject soul;                     // soul prefab to drop when dead
     private PlayerController player;            // cached player object
-    public float DistanceThreshold = 3f;        // detection radius
+    private float DistanceThreshold = 5f;        // detection radius
     public float moveForce;                     // Amount of force added to move the player left and right.
     public float maxSpeed;                      // The fastest the player can travel in the x axis.
+    public float damage;
+    public float recoilForce;                    // recoil player experiences when hit by enemy
 
     [HideInInspector]
     public bool facingRight = true;
 
     void Start () {
+        Health = maxHealth;
         Mobile = true;
         //cache player gameObject
         player = FindObjectOfType<PlayerController>();
@@ -22,7 +25,8 @@ public class Enemy : CharacterTemplate {
 	
 	void Update ()
     {
-        if (health <= 0f)
+        // handle death
+        if (Health <= 0f)
         {
             Instantiate(soul, transform.position, Quaternion.identity);
             Destroy(gameObject);
@@ -74,14 +78,12 @@ public class Enemy : CharacterTemplate {
         theScale.x *= -1;
         transform.localScale = theScale;
     }
-    /// <summary>
-    /// Deal damage to enemy / return true if enemy is still alive
-    /// </summary>
-    /// <param name="damage"></param>
-    public bool ApplyDamage(float damage)
-    {
-        health -= damage;
-        return health > 0f;
-    }
     
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if(coll.gameObject.tag == "Player")
+        {
+            coll.gameObject.GetComponent<PlayerController>().ApplyDamage(damage, transform.position, recoilForce);
+        }
+    }
 }

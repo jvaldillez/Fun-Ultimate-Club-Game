@@ -8,11 +8,11 @@ public class Siphon : Ability
     private bool hit = false;       // true if hits an enemy        
     private Enemy victim;           // Enemy we hit
     private float timer;            // counts lifetime
-    //PlayerController player;
+    private PlayerController player;
     
     void Start ()
     {
-        
+       player = FindObjectOfType<PlayerController>();
        timer = 0f;
     }
     void Update () {
@@ -32,9 +32,12 @@ public class Siphon : Ability
         }
         else
         {
+            victim.Mobile = false;
+            var DoT = damage * Time.deltaTime;
             // apply constant damage over time until enemy dies
-            if (!victim.ApplyDamage(damage * Time.deltaTime))
+            if (!victim.ApplyDamage(DoT))
                 Destruct();
+            player.RestoreHealth(DoT);
 
         }
         

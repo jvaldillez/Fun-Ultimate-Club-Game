@@ -9,6 +9,7 @@ public abstract class Ability : MonoBehaviour {
     public float damage;                // base damage of spell
     //public float coolDownTimer;         // cd timer
     public float lifeTime;              // how long spell lives
+    public float recoilForce;           // pushback
 
     public virtual void Init(Vector3 pos, Vector3 direc)
     {
