@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : CharacterTemplate {
 
     public float health;                        // enemy starting health
     public GameObject soul;                     // soul prefab to drop when dead
@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour {
     public bool facingRight = true;
 
     void Start () {
-
+        Mobile = true;
         //cache player gameObject
         player = FindObjectOfType<PlayerController>();
 	}	
@@ -32,7 +32,7 @@ public class Enemy : MonoBehaviour {
     void FixedUpdate()
     {
         // Handle Player Detection
-        if (Vector3.Distance(player.transform.position, transform.position) < DistanceThreshold)
+        if (Vector3.Distance(player.transform.position, transform.position) < DistanceThreshold && Mobile)
         {
             MoveTowardsPlayer();
         }
