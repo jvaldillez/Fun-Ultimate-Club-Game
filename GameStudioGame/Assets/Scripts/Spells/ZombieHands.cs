@@ -18,9 +18,7 @@ public class ZombieHands : Ability
 
     void Start()
     {
-        //timer = 0f;
-        //maxHeight = 1f;
-        //up = true;
+        
         victims = new List<Enemy>();
     }
 
@@ -49,6 +47,12 @@ public class ZombieHands : Ability
             immobilize(victim);
             victim.ApplyDamage(damage);
             victims.Add(victim);
+        }
+        else if (coll.tag == "Ground")
+        {
+            var groundT = coll.transform;
+            var groundC = coll.GetComponent<SpriteRenderer>();
+            transform.position += new Vector3(0f, (groundT.position.y + groundC.bounds.size.y) - (transform.position.y - GetComponent<SpriteRenderer>().bounds.size.y) - 0.5f, 0f);            
         }
     }
 

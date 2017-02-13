@@ -13,6 +13,7 @@ public class PlayerController : CharacterTemplate {
     public float moveForce;              // Amount of force added to move the player left and right.
     public float maxSpeed;               // The fastest the player can travel in the x axis.
     public float jumpForce;		    	// Amount of force added when the player jumps.
+    //public float recoilForce;           // amount of force added whe play is hit by enemy
 
     //private Transform groundCheck;          // A position marking where to check if the player is grounded.
     private bool grounded = false;			// Whether or not the player is grounded.
@@ -21,6 +22,7 @@ public class PlayerController : CharacterTemplate {
     public GameObject siphon;
     public GameObject ZombieHands;
     private Rigidbody2D playerRb;           //cache playerRb
+    private SpriteRenderer playerSR;        // cahce playerSpriteR
 
     //player stats
     private int soulCount = 0;
@@ -28,8 +30,10 @@ public class PlayerController : CharacterTemplate {
     // Use this for initialization
     void Awake ()
     {
+        Health = maxHealth;
         Mobile = true;
         playerRb = GetComponent<Rigidbody2D>();
+        playerSR = GetComponent<SpriteRenderer>();
         // Setting up references.
         //groundCheck = transform.Find("groundCheck");
 
@@ -63,6 +67,9 @@ public class PlayerController : CharacterTemplate {
                 CastZombieHands(ZombieHands);
             }
         }
+
+        if (Health < 0f)
+            Destroy(gameObject);
     }
 
 
@@ -157,7 +164,24 @@ public class PlayerController : CharacterTemplate {
         }
          
     }
-    
 
+    public override bool ApplyDamage(float damage, Vector3 position, float recoil)
+    {        
+        //playerSR.color = Color.red;
+        //Invoke("RestoreColor", 0.1f);
+        return base.ApplyDamage(damage, position, recoil);
+    }
+    
+    
+   
+
+    public void RestoreHealth(float deltaHealth)
+    {
+        var sum = Health + deltaHealth;
+        if (sum > maxHealth)
+            Health = maxHealth;
+        else
+            Health = sum;
+    }
 
 }
