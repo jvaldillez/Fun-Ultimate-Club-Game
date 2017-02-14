@@ -13,8 +13,7 @@ public class PlayerController : CharacterTemplate {
     public float moveForce;              // Amount of force added to move the player left and right.
     public float maxSpeed;               // The fastest the player can travel in the x axis.
     public float jumpForce;		    	// Amount of force added when the player jumps.
-    //public float recoilForce;           // amount of force added whe play is hit by enemy
-
+    
     //private Transform groundCheck;          // A position marking where to check if the player is grounded.
     private bool grounded = false;			// Whether or not the player is grounded.
 
@@ -22,7 +21,7 @@ public class PlayerController : CharacterTemplate {
     public GameObject siphon;
     public GameObject ZombieHands;
     private Rigidbody2D playerRb;           //cache playerRb
-    private SpriteRenderer playerSR;        // cahce playerSpriteR
+    //private SpriteRenderer playerSR;        // cahce playerSpriteR
 
     //player stats
     private int soulCount = 0;
@@ -33,7 +32,7 @@ public class PlayerController : CharacterTemplate {
         Health = maxHealth;
         Mobile = true;
         playerRb = GetComponent<Rigidbody2D>();
-        playerSR = GetComponent<SpriteRenderer>();
+        //playerSR = GetComponent<SpriteRenderer>();
         // Setting up references.
         //groundCheck = transform.Find("groundCheck");
 
