@@ -25,6 +25,7 @@ public class PlayerController : CharacterTemplate {
 
     //player stats
     private int soulCount = 0;
+    public bool playerDead = false;
 
     private Animator animator;
 
@@ -44,6 +45,13 @@ public class PlayerController : CharacterTemplate {
 	// Update is called once per frame
 	void Update ()
     {
+        if (Health < 0f && !playerDead)
+        {
+            //Destroy(gameObject);
+            animator.SetTrigger("playerDead");
+            playerDead = true;
+        }
+
         if (Mobile)
         {
             // The player is grounded if a linecast to the groundcheck position hits anything on the ground layer.
@@ -65,7 +73,7 @@ public class PlayerController : CharacterTemplate {
             {
                 Ability.immobilize(this);
                 CastSpell(siphon);
-                animator.SetTrigger("playerThrow");
+                animator.SetTrigger("playerIdle");
             }
 
             if (Input.GetButtonDown("Fire3"))
@@ -74,9 +82,6 @@ public class PlayerController : CharacterTemplate {
                 animator.SetTrigger("playerThrow");
             }
         }
-
-        if (Health < 0f)
-            Destroy(gameObject);
     }
 
 
@@ -88,7 +93,7 @@ public class PlayerController : CharacterTemplate {
         {
             // Cache the horizontal input.
             float h = Input.GetAxisRaw("Horizontal");
-            if (playerRb.velocity.x == 0)
+            if (playerRb.velocity.x == 0 || !Mobile)
             {
                 animator.SetTrigger("playerIdle");
             }
