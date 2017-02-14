@@ -42,12 +42,12 @@ public class Enemy : CharacterTemplate {
     void FixedUpdate()
     {
         // Handle Player Detection
-        if (Vector3.Distance(player.transform.position, transform.position) < DistanceThreshold && Mobile)
+        if (Vector3.Distance(player.transform.position, transform.position) < DistanceThreshold && Mobile && !enemyDead)
         {
             MoveTowardsPlayer();
             animator.SetTrigger("enemyRun");
         }
-        else
+        else if (!enemyDead)
         {
             animator.SetTrigger("enemyIdle");
         }
