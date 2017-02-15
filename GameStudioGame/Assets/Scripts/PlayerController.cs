@@ -25,10 +25,14 @@ public class PlayerController : CharacterTemplate {
 
     //player stats
     private int soulCount = 0;
+    public bool playerDead = false;
+
+    private Animator animator;
 
     // Use this for initialization
     void Awake ()
     {
+        animator = GetComponent<Animator>();
         Health = maxHealth;
         Mobile = true;
         playerRb = GetComponent<Rigidbody2D>();
@@ -41,6 +45,13 @@ public class PlayerController : CharacterTemplate {
 	// Update is called once per frame
 	void Update ()
     {
+        if (Health < 0f && !playerDead)
+        {
+            //Destroy(gameObject);
+            animator.SetTrigger("playerDead");
+            playerDead = true;
+        }
+
         if (Mobile)
         {
             // The player is grounded if a linecast to the groundcheck position hits anything on the ground layer.
@@ -48,27 +59,29 @@ public class PlayerController : CharacterTemplate {
 
             // If the jump button is pressed and the player is grounded then the player should jump.
             if (Input.GetButtonDown("Jump") && grounded)
+            {
                 jump = true;
-
+                animator.SetTrigger("playerJump");
+            }
             if (Input.GetButtonDown("Fire1"))
             {
                 CastSpell(Projectile);
+                animator.SetTrigger("playerThrow");
             }
 
             if (Input.GetButtonDown("Fire2"))
             {
                 Ability.immobilize(this);
                 CastSpell(siphon);
+                animator.SetTrigger("playerIdle");
             }
 
             if (Input.GetButtonDown("Fire3"))
             {
                 CastZombieHands(ZombieHands);
+                animator.SetTrigger("playerThrow");
             }
         }
-
-        if (Health < 0f)
-            Destroy(gameObject);
     }
 
 
@@ -80,13 +93,22 @@ public class PlayerController : CharacterTemplate {
         {
             // Cache the horizontal input.
             float h = Input.GetAxisRaw("Horizontal");
-
+            if (playerRb.velocity.x == 0 || !Mobile)
+            {
+                animator.SetTrigger("playerIdle");
+            }
+            else
+            {
+                animator.SetTrigger("playerRun");
+            }
 
             // If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
             if (h * playerRb.velocity.x < maxSpeed)
+            {
                 // ... add a force to the player.
                 playerRb.AddForce(Vector2.right * h * moveForce);
-
+                
+            }
             // If the player's horizontal velocity is greater than the maxSpeed...
             if (Mathf.Abs(playerRb.velocity.x) > maxSpeed)
                 // ... set the player's velocity to the maxSpeed in the x axis.

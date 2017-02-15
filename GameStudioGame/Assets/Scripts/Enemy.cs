@@ -12,33 +12,44 @@ public class Enemy : CharacterTemplate {
     public float maxSpeed;                      // The fastest the player can travel in the x axis.
     public float damage;
     public float recoilForce;                    // recoil player experiences when hit by enemy
-
+    private bool enemyDead = false;
     [HideInInspector]
     public bool facingRight = true;
+
+    private Animator animator;
 
     void Start () {
         Health = maxHealth;
         Mobile = true;
         //cache player gameObject
         player = FindObjectOfType<PlayerController>();
-	}	
+        animator = GetComponent<Animator>();
+    }	
 	
 	void Update ()
     {
         // handle death
-        if (Health <= 0f)
+        if (Health <= 0f && !enemyDead)
         {
             Instantiate(soul, transform.position, Quaternion.identity);
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            animator.SetTrigger("enemyDead");
+            enemyDead = true;
+            Invoke("Destruct", 2f);
         }
 	}
 
     void FixedUpdate()
     {
         // Handle Player Detection
-        if (Vector3.Distance(player.transform.position, transform.position) < DistanceThreshold && Mobile)
+        if (Vector3.Distance(player.transform.position, transform.position) < DistanceThreshold && Mobile && !enemyDead)
         {
             MoveTowardsPlayer();
+            animator.SetTrigger("enemyRun");
+        }
+        else if (!enemyDead)
+        {
+            animator.SetTrigger("enemyIdle");
         }
     }
 
@@ -57,7 +68,7 @@ public class Enemy : CharacterTemplate {
 
 
         
-        /*        
+               
         if (diff > 0f && facingRight)
             // ... flip the player.
             Flip();
@@ -65,7 +76,7 @@ public class Enemy : CharacterTemplate {
         else if (diff < 0f && !facingRight)
             // ... flip the player.
             Flip();
-            */
+            
     }
 
     void Flip()
@@ -84,6 +95,7 @@ public class Enemy : CharacterTemplate {
         if(coll.gameObject.tag == "Player")
         {
             coll.gameObject.GetComponent<PlayerController>().ApplyDamage(damage, transform.position, recoilForce);
+            animator.SetTrigger("enemyAttack");
         }
     }
 }

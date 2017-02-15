@@ -7,7 +7,7 @@ public abstract class CharacterTemplate : MonoBehaviour
     public float maxHealth;
     private float health;  
     private bool mobile;
-    public Color normalColor;    
+    //public Color normalColor;    
 
 
     /// <summary>
@@ -42,7 +42,7 @@ public abstract class CharacterTemplate : MonoBehaviour
 
     public virtual void RestoreColor()
     {
-        GetComponent<SpriteRenderer>().color = normalColor;
+       GetComponent<SpriteRenderer>().color = Color.white;
     }
 
     // if recoil
@@ -64,5 +64,10 @@ public abstract class CharacterTemplate : MonoBehaviour
         }
 
         GetComponent<Rigidbody2D>().AddForce(forceVector);
+    }
+
+    public virtual void Destruct()
+    {
+        Destroy(gameObject);
     }
 }
