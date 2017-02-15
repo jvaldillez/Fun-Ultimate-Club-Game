@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : CharacterTemplate {
 
@@ -27,6 +28,8 @@ public class PlayerController : CharacterTemplate {
     private int soulCount = 0;
     public bool playerDead = false;
 
+    public Text soulText;
+    public Text healthText;
     private Animator animator;
 
     // Use this for initialization
@@ -36,6 +39,8 @@ public class PlayerController : CharacterTemplate {
         Health = maxHealth;
         Mobile = true;
         playerRb = GetComponent<Rigidbody2D>();
+        setSoulText(soulCount);
+        setHealthText();
         //playerSR = GetComponent<SpriteRenderer>();
         // Setting up references.
         //groundCheck = transform.Find("groundCheck");
@@ -45,6 +50,7 @@ public class PlayerController : CharacterTemplate {
 	// Update is called once per frame
 	void Update ()
     {
+        setHealthText();
         if (Health < 0f && !playerDead)
         {
             //Destroy(gameObject);
@@ -182,6 +188,7 @@ public class PlayerController : CharacterTemplate {
         {
             Destroy(coll.gameObject);
             soulCount++;
+            setSoulText(soulCount);
         }
          
     }
@@ -203,6 +210,16 @@ public class PlayerController : CharacterTemplate {
             Health = maxHealth;
         else
             Health = sum;
+    }
+
+    public void setSoulText(int count)
+    {
+        soulText.text = "Souls Collected:" + count.ToString();
+    }
+
+    public void setHealthText()
+    {
+        healthText.text = "Health: " + Health.ToString() + "/10";
     }
 
 }
