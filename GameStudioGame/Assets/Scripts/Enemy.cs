@@ -92,7 +92,7 @@ public class Enemy : CharacterTemplate {
     
     void OnCollisionEnter2D(Collision2D coll)
     {
-        if(coll.gameObject.tag == "Player")
+        if(coll.gameObject.tag == "Player" && !enemyDead)
         {
             coll.gameObject.GetComponent<PlayerController>().ApplyDamage(damage, transform.position, recoilForce);
             animator.SetTrigger("enemyAttack");
