@@ -30,6 +30,7 @@ public class PlayerController : CharacterTemplate {
 
     public Text soulText;
     public Text healthText;
+    public Text gameOverText;
     private Animator animator;
 
     public bool gameOver = false;
@@ -60,6 +61,8 @@ public class PlayerController : CharacterTemplate {
                 //Destroy(gameObject);
                 animator.SetTrigger("playerDead");
                 playerDead = true;
+                gameOver = true;
+                gameOverText.text = "Game Over";
             }
 
             if (Mobile)
@@ -93,7 +96,7 @@ public class PlayerController : CharacterTemplate {
                 }
             }
         }
-        else
+        else if (!playerDead)
         {
             animator.SetTrigger("playerIdle");
         }
@@ -152,7 +155,7 @@ public class PlayerController : CharacterTemplate {
                 }
             }
         }
-        else
+        else if (!playerDead)
         {
             animator.SetTrigger("playerIdle");
         }

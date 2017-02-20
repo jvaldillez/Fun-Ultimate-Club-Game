@@ -14,9 +14,7 @@ class Goal : MonoBehaviour
             var player = coll.gameObject.GetComponent<PlayerController>();
             player.gameOver = true;
             var playerRb = player.GetComponent<Rigidbody2D>();
-            playerRb.velocity = new Vector3(0, 0, 0);
-            var animator = player.GetComponent<Animator>();
-            animator.SetTrigger("playerIdle");         
+            playerRb.velocity = new Vector3(0, 0, 0);      
             gameOverText.text = "Level Complete";
         }
     }
