@@ -30,7 +30,10 @@ public class PlayerController : CharacterTemplate {
 
     public Text soulText;
     public Text healthText;
+    public Text gameOverText;
     private Animator animator;
+
+    public bool gameOver = false;
 
     // Use this for initialization
     void Awake ()
@@ -46,101 +49,115 @@ public class PlayerController : CharacterTemplate {
         //groundCheck = transform.Find("groundCheck");
 
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
-        setHealthText();
-        if (Health < 0f && !playerDead)
+        if (!gameOver)
         {
-            //Destroy(gameObject);
-            animator.SetTrigger("playerDead");
-            playerDead = true;
+            setHealthText();
+            if (Health < 0f && !playerDead)
+            {
+                //Destroy(gameObject);
+                animator.SetTrigger("playerDead");
+                playerDead = true;
+                gameOver = true;
+                gameOverText.text = "Game Over";
+            }
+
+            if (Mobile)
+            {
+                // The player is grounded if a linecast to the groundcheck position hits anything on the ground layer.
+                //grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
+
+                // If the jump button is pressed and the player is grounded then the player should jump.
+                if (Input.GetButtonDown("Jump") && grounded)
+                {
+                    jump = true;
+                    animator.SetTrigger("playerJump");
+                }
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    CastSpell(Projectile);
+                    animator.SetTrigger("playerThrow");
+                }
+
+                if (Input.GetButtonDown("Fire2"))
+                {
+                    Ability.immobilize(this);
+                    CastSpell(siphon);
+                    animator.SetTrigger("playerIdle");
+                }
+
+                if (Input.GetButtonDown("Fire3"))
+                {
+                    CastZombieHands(ZombieHands);
+                    animator.SetTrigger("playerThrow");
+                }
+            }
         }
-
-        if (Mobile)
+        else if (!playerDead)
         {
-            // The player is grounded if a linecast to the groundcheck position hits anything on the ground layer.
-            //grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
-
-            // If the jump button is pressed and the player is grounded then the player should jump.
-            if (Input.GetButtonDown("Jump") && grounded)
-            {
-                jump = true;
-                animator.SetTrigger("playerJump");
-            }
-            if (Input.GetButtonDown("Fire1"))
-            {
-                CastSpell(Projectile);
-                animator.SetTrigger("playerThrow");
-            }
-
-            if (Input.GetButtonDown("Fire2"))
-            {
-                Ability.immobilize(this);
-                CastSpell(siphon);
-                animator.SetTrigger("playerIdle");
-            }
-
-            if (Input.GetButtonDown("Fire3"))
-            {
-                CastZombieHands(ZombieHands);
-                animator.SetTrigger("playerThrow");
-            }
+            animator.SetTrigger("playerIdle");
         }
     }
-
 
     // Used for physics updates
     void FixedUpdate()
     {
-
-        if (Mobile)
+        if (!gameOver)
         {
-            // Cache the horizontal input.
-            float h = Input.GetAxisRaw("Horizontal");
-            if (playerRb.velocity.x == 0 || !Mobile)
+            if (Mobile)
             {
-                animator.SetTrigger("playerIdle");
+                // Cache the horizontal input.
+                float h = Input.GetAxisRaw("Horizontal");
+                if (playerRb.velocity.x == 0 || !Mobile)
+                {
+                    animator.SetTrigger("playerIdle");
+                }
+                else
+                {
+                    animator.SetTrigger("playerRun");
+                }
+
+                // If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
+                if (h * playerRb.velocity.x < maxSpeed)
+                {
+                    // ... add a force to the player.
+                    playerRb.AddForce(Vector2.right * h * moveForce);
+
+                }
+                // If the player's horizontal velocity is greater than the maxSpeed...
+                if (Mathf.Abs(playerRb.velocity.x) > maxSpeed)
+                    // ... set the player's velocity to the maxSpeed in the x axis.
+                    playerRb.velocity = new Vector2(Mathf.Sign(playerRb.velocity.x) * maxSpeed, playerRb.velocity.y);
+
+                // If the input is moving the player right and the player is facing left...
+                if (h > 0 && !facingRight)
+                    // ... flip the player.
+                    Flip();
+                // Otherwise if the input is moving the player left and the player is facing right...
+                else if (h < 0 && facingRight)
+                    // ... flip the player.
+                    Flip();
+
+                // If the player should jump...
+                if (jump)
+                {
+
+                    // Add a vertical force to the player.
+                    playerRb.AddForce(new Vector2(0f, jumpForce));
+
+                    // Make sure the player can't jump again until the jump conditions from Update are satisfied.
+                    jump = false;
+                    grounded = false;
+
+                }
             }
-            else
-            {
-                animator.SetTrigger("playerRun");
-            }
-
-            // If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
-            if (h * playerRb.velocity.x < maxSpeed)
-            {
-                // ... add a force to the player.
-                playerRb.AddForce(Vector2.right * h * moveForce);
-                
-            }
-            // If the player's horizontal velocity is greater than the maxSpeed...
-            if (Mathf.Abs(playerRb.velocity.x) > maxSpeed)
-                // ... set the player's velocity to the maxSpeed in the x axis.
-                playerRb.velocity = new Vector2(Mathf.Sign(playerRb.velocity.x) * maxSpeed, playerRb.velocity.y);
-
-            // If the input is moving the player right and the player is facing left...
-            if (h > 0 && !facingRight)
-                // ... flip the player.
-                Flip();
-            // Otherwise if the input is moving the player left and the player is facing right...
-            else if (h < 0 && facingRight)
-                // ... flip the player.
-                Flip();
-
-            // If the player should jump...
-            if (jump)
-            {
-
-                // Add a vertical force to the player.
-                playerRb.AddForce(new Vector2(0f, jumpForce));
-
-                // Make sure the player can't jump again until the jump conditions from Update are satisfied.
-                jump = false;
-                grounded = false;
-
-            }
+        }
+        else if (!playerDead)
+        {
+            animator.SetTrigger("playerIdle");
         }
     }
     

@@ -28,7 +28,7 @@ public class Siphon : Ability
             // increase size of tether over time, move it so only one side grows
             var vec = direction * speed * Time.deltaTime; 
             transform.localScale += vec;
-            transform.position += (vec / 0.3f);
+            transform.position += (vec / 2f);
         }
         else
         {
@@ -68,7 +68,7 @@ public class Siphon : Ability
     public override void Init(Vector3 pos, Vector3 direc)
     {
         var player = FindObjectOfType<PlayerController>().transform;
-        transform.parent = player;
+        //transform.parent = player;
         base.Init(pos, direc);
     }
 
