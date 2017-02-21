@@ -21,6 +21,7 @@ public class PlayerController : CharacterTemplate {
     public GameObject Projectile;           //projetile prefab
     public GameObject siphon;
     public GameObject ZombieHands;
+    public GameObject MeleeAttack;
     private Rigidbody2D playerRb;           //cache playerRb
     //private SpriteRenderer playerSR;        // cahce playerSpriteR
 
@@ -75,6 +76,11 @@ public class PlayerController : CharacterTemplate {
                 {
                     jump = true;
                     animator.SetTrigger("playerJump");
+                }
+                if (Input.GetButtonDown("Melee"))
+                {
+                    CastSpell(MeleeAttack);
+                    animator.SetTrigger("playerMelee");
                 }
                 if (Input.GetButtonDown("Fire1"))
                 {
