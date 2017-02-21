@@ -57,8 +57,10 @@ public class AttackState : IEnemyState
         enemy.DoNothing();
         if (coolDownTimer < Time.time)
         {
+            enemy.CastSpell(enemy.meleeAttack);
             coolDownTimer = Time.time + enemy.attackCoolDown;
-        }
+           
+        }        
     }
 
 }

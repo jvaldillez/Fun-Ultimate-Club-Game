@@ -12,7 +12,7 @@ public class Siphon : Ability
     
     void Start ()
     {
-       player = FindObjectOfType<PlayerController>();
+       //player = FindObjectOfType<PlayerController>();
        timer = 0f;
     }
     void Update () {
@@ -64,12 +64,13 @@ public class Siphon : Ability
         if (victim) victim.Mobile = true;
         base.Destruct();
     }
-
-    public override void Init(Vector3 pos, Vector3 direc)
+    
+    public override void Init(Vector3 pos, Vector3 direc, CharacterTemplate chr)
     {
-        var player = FindObjectOfType<PlayerController>().transform;
+        //var player = FindObjectOfType<PlayerController>().transform;
         //transform.parent = player;
-        base.Init(pos, direc);
+        player = chr.GetComponent<PlayerController>();
+        base.Init(pos, direc, chr);
     }
-
+    
 }

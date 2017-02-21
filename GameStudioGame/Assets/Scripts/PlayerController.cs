@@ -115,50 +115,7 @@ public class PlayerController : CharacterTemplate {
         {
             if (Mobile)
             {
-                // Cache the horizontal input.
-                float h = Input.GetAxisRaw("Horizontal");
-                if (playerRb.velocity.x == 0 || !Mobile)
-                {
-                    animator.SetTrigger("playerIdle");
-                }
-                else
-                {
-                    animator.SetTrigger("playerRun");
-                }
-
-                // If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
-                if (h * playerRb.velocity.x < maxSpeed)
-                {
-                    // ... add a force to the player.
-                    playerRb.AddForce(Vector2.right * h * moveForce);
-
-                }
-                // If the player's horizontal velocity is greater than the maxSpeed...
-                if (Mathf.Abs(playerRb.velocity.x) > maxSpeed)
-                    // ... set the player's velocity to the maxSpeed in the x axis.
-                    playerRb.velocity = new Vector2(Mathf.Sign(playerRb.velocity.x) * maxSpeed, playerRb.velocity.y);
-
-                // If the input is moving the player right and the player is facing left...
-                if (h > 0 && !facingRight)
-                    // ... flip the player.
-                    Flip();
-                // Otherwise if the input is moving the player left and the player is facing right...
-                else if (h < 0 && facingRight)
-                    // ... flip the player.
-                    Flip();
-
-                // If the player should jump...
-                if (jump)
-                {
-
-                    // Add a vertical force to the player.
-                    playerRb.AddForce(new Vector2(0f, jumpForce));
-
-                    // Make sure the player can't jump again until the jump conditions from Update are satisfied.
-                    jump = false;
-                    grounded = false;
-
-                }
+                Move();                
             }
         }
         else if (!playerDead)
@@ -171,11 +128,8 @@ public class PlayerController : CharacterTemplate {
     
     void CastSpell(GameObject prefab)
     {
-        var spell = Instantiate(prefab).GetComponent<Ability>();
-        var direction = transform.right;
-        if (!facingRight)
-            direction *= -1;
-        spell.Init(transform.position + direction * 0.2f, direction);
+        var spell = Instantiate(prefab).GetComponent<Ability>();        
+        spell.Init(transform.position + transform.right * 0.2f, transform.right, this);
     }
 
     void CastZombieHands(GameObject prefab)
@@ -187,18 +141,7 @@ public class PlayerController : CharacterTemplate {
         if (!facingRight)
             player_direction *= -1;
 
-        spell.Init(transform.position + player_direction * 2f, spell_direction);
-    }
-
-    void Flip()
-    {
-        // Switch the way the player is labelled as facing.
-        facingRight = !facingRight;
-
-        // Multiply the player's x local scale by -1.
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
-        transform.localScale = theScale;
+        spell.Init(transform.position + player_direction * 2f, spell_direction, this);
     }
 
     // Handle Collisions
@@ -214,6 +157,47 @@ public class PlayerController : CharacterTemplate {
             setSoulText(soulCount);
         }
          
+    }
+
+    void Move()
+    {
+        // Cache the horizontal input.
+        float h = Input.GetAxisRaw("Horizontal");
+        if (playerRb.velocity.x == 0 || !Mobile)
+        {
+            animator.SetTrigger("playerIdle");
+        }
+        else
+        {
+            animator.SetTrigger("playerRun");
+        }
+
+        // If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
+        if (h * playerRb.velocity.x < maxSpeed)
+        {            
+            playerRb.AddForce(Vector2.right * h * moveForce);
+        }
+
+        // cap speed
+        if (Mathf.Abs(playerRb.velocity.x) > maxSpeed)
+            playerRb.velocity = new Vector2(Mathf.Sign(playerRb.velocity.x) * maxSpeed, playerRb.velocity.y);
+
+        // flip player
+        if (h > 0f && transform.right.x < 0f
+            || h < 0f && transform.right.x > 0f)
+            transform.right *= -1f;
+
+
+        // If the player should jump...
+        if (jump)
+        {
+            // Add a vertical force to the player.
+            playerRb.AddForce(new Vector2(0f, jumpForce));
+
+            // Make sure the player can't jump again until the jump conditions from Update are satisfied.
+            jump = false;
+            grounded = false;
+        }
     }
 
     public override bool ApplyDamage(float damage, Vector3 position, float recoil)

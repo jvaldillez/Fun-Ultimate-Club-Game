@@ -10,15 +10,15 @@ public abstract class Ability : MonoBehaviour {
     //public float coolDownTimer;         // cd timer
     public float lifeTime;              // how long spell lives
     public float recoilForce;           // pushback
+    public string targetTag;            // "Enemy" or "Player"
 
-    public virtual void Init(Vector3 pos, Vector3 direc)
+    public virtual void Init(Vector3 pos, Vector3 direc, CharacterTemplate chr)
     {
-
+        targetTag = chr.GetComponent<PlayerController>() ? "Enemy" : "Player";
         transform.position = pos;
         direction = direc;
 
-    }
-
+    }  
     public virtual void Destruct()
     {
         Destroy(gameObject);
@@ -29,5 +29,5 @@ public abstract class Ability : MonoBehaviour {
     {
         chr.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         chr.GetComponent<CharacterTemplate>().Mobile = false;
-    }
+    }    
 }

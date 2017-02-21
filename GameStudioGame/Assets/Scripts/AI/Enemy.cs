@@ -13,6 +13,8 @@ public class Enemy : CharacterTemplate {
     public float damage;
     public float recoilForce;                    // recoil player experiences when hit by enemy
     private bool enemyDead = false;
+
+    public GameObject meleeAttack;
     public float attackRadius = 1.5f;
     public float attackCoolDown = 1f;
 
@@ -78,43 +80,36 @@ public class Enemy : CharacterTemplate {
     // ChaseState
     public void MoveTowardsPlayer()
     {
+        // flip
         var diff = transform.position.x - chaseTarget.position.x;
-        var sign = diff > 0f ? -1f : 1f;
+        if ((diff > 0f && transform.right.x > 0f)
+            || (diff < 0f && transform.right.x < 0f))
+            transform.right *= -1f;      
+        
 
         // add force!
         if (GetComponent<Rigidbody2D>().velocity.x < maxSpeed)
-            GetComponent<Rigidbody2D>().AddForce(transform.right * sign * moveForce);
+            GetComponent<Rigidbody2D>().AddForce(transform.right * moveForce);
 
         // cap speed!
         if (Mathf.Abs(GetComponent<Rigidbody2D>().velocity.x) > maxSpeed)           
             GetComponent<Rigidbody2D>().velocity = new Vector2(Mathf.Sign(GetComponent<Rigidbody2D>().velocity.x) * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
 
         
-               
-        if (diff > 0f && facingRight)
-            // ... flip the player.
-            Flip();
-        // Otherwise if the input is moving the player left and the player is facing right...
-        else if (diff < 0f && !facingRight)
-            // ... flip the player.
-            Flip();
-
+       
         animator.SetTrigger("enemyRun");
     }
     
 
-    
-    void Flip()
+    public void CastSpell(GameObject prefab)
     {
-        // Switch the way the player is labelled as facing.
-        facingRight = !facingRight;
+        var spell = Instantiate(prefab).GetComponent<Ability>();
+        var direction = transform.right;
+        if (!facingRight)
+            direction *= -1;
+        spell.Init(transform.position + direction * 1f, direction, this);
+    }
 
-        // Multiply the player's x local scale by -1.
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
-        transform.localScale = theScale;
-    }   
-    
     /*void OnCollisionEnter2D(Collision2D coll)
     {
         if(coll.gameObject.tag == "Player" && !enemyDead)

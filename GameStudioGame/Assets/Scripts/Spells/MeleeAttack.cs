@@ -13,9 +13,9 @@ public class MeleeAttack: Ability
     void OnTriggerEnter2D(Collider2D coll)
     {
         //Destruct();
-        if (coll.tag == "Enemy")
+        if (coll.tag == targetTag)
         {
-            coll.GetComponent<Enemy>().ApplyDamage(damage, transform.position, recoilForce);
+            coll.GetComponent<CharacterTemplate>().ApplyDamage(damage, transform.position, recoilForce);
         }
     }
 }
