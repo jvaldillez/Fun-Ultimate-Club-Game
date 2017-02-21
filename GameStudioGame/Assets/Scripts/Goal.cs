@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-class Goal : MonoBehaviour
+public class Goal : MonoBehaviour
 {
     public Text gameOverText;
 
