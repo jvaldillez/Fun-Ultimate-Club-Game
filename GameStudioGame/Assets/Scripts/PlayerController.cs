@@ -26,7 +26,7 @@ public class PlayerController : CharacterTemplate {
     //private SpriteRenderer playerSR;        // cahce playerSpriteR
 
     //player stats
-    private int soulCount = 0;
+    public int soulCount = 0;
     public bool playerDead = false;
 
     public Text soulText;
@@ -35,6 +35,9 @@ public class PlayerController : CharacterTemplate {
     private Animator animator;
 
     public bool gameOver = false;
+    public bool rangedUnlocked = false;
+    public bool siphonUnlocked = false;
+    public bool zombieHandsUnlocked = false;
 
     // Use this for initialization
     void Awake ()
@@ -82,20 +85,20 @@ public class PlayerController : CharacterTemplate {
                     CastSpell(MeleeAttack);
                     animator.SetTrigger("playerMelee");
                 }
-                if (Input.GetButtonDown("Fire1"))
+                if (Input.GetButtonDown("Fire1") && rangedUnlocked)
                 {
                     CastSpell(Projectile);
                     animator.SetTrigger("playerThrow");
                 }
 
-                if (Input.GetButtonDown("Fire2"))
+                if (Input.GetButtonDown("Fire2") && siphonUnlocked)
                 {
                     Ability.immobilize(this);
                     CastSpell(siphon);
                     animator.SetTrigger("playerIdle");
                 }
 
-                if (Input.GetButtonDown("Fire3"))
+                if (Input.GetButtonDown("Fire3") && zombieHandsUnlocked)
                 {
                     CastZombieHands(ZombieHands);
                     animator.SetTrigger("playerThrow");
