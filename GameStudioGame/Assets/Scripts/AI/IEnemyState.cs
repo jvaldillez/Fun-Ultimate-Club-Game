@@ -17,4 +17,8 @@ public interface IEnemyState
     void ToChaseState();
 
     void ToAttackState();
+
+    void ToDeadState();
+
+    void OnCollisionEnter2D(Collision2D coll);
 }

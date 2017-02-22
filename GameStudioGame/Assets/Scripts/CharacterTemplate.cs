@@ -4,11 +4,28 @@ using UnityEngine;
 
 public abstract class CharacterTemplate : MonoBehaviour
 {
+    // character constants
     public float maxHealth;
+    public float movementSpeed;
+    public float jumpSpeed;
+
+    //
     private float health;  
     private bool mobile;
-    //public Color normalColor;    
 
+    //animator triggers    
+    protected string running,
+        jumping,
+        throwing,
+        idling,
+        dead,
+        meleeing;
+
+    //cache components
+    [HideInInspector]  
+    public Rigidbody2D rb;
+    [HideInInspector]
+    public Animator animator;
 
     /// <summary>
     /// health property
@@ -55,7 +72,7 @@ public abstract class CharacterTemplate : MonoBehaviour
     // Recoil when character is hit
     public virtual void PushBack(Vector3 sourcePosition, float recoil)
     {
-
+        /*
         var forceVector = new Vector2(recoil, 100f);
 
         if (transform.position.x < sourcePosition.x)
@@ -64,8 +81,50 @@ public abstract class CharacterTemplate : MonoBehaviour
         }
 
         GetComponent<Rigidbody2D>().AddForce(forceVector);
+        */
+        var velVec = new Vector2(1f, 0.3f) * recoil;
+        if (transform.position.x < sourcePosition.x)    
+        {
+            velVec = new Vector2(-velVec.x, velVec.y);
+        }
+        GetComponent<Rigidbody2D>().velocity = velVec;
+
+    }    
+
+    public virtual void Move(float input)
+    {
+        if (mobile)
+        {
+            // flip player
+            if (input > 0f && transform.right.x < 0f
+                || input < 0f && transform.right.x > 0f)
+                transform.right *= -1f;
+
+            // add velocity
+            rb.velocity = new Vector2(input * movementSpeed, rb.velocity.y);
+            
+            //animate
+            if (input != 0f)
+                animator.SetTrigger(running);
+            else
+                animator.SetTrigger(idling);
+        }
+        else
+            animator.SetTrigger(idling);
+            
+
     }
 
+    public void Idle()
+    {
+        animator.SetTrigger(idling);
+    }
+
+    public virtual void Jump()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+        animator.SetTrigger(jumping);
+    }
     public virtual void Destruct()
     {
         Destroy(gameObject);

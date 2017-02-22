@@ -4,59 +4,75 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerController : CharacterTemplate {
-
+        
     [HideInInspector]
-    public bool facingRight = true;			// For determining which way the player is currently facing.
-    [HideInInspector]
-    public bool jump = false;				// Condition for whether the player should jump.
-
-    // physics constants
-    public float moveForce;              // Amount of force added to move the player left and right.
-    public float maxSpeed;               // The fastest the player can travel in the x axis.
-    public float jumpForce;		    	// Amount of force added when the player jumps.
+    public bool jump = false;				// Condition for whether the player should jump.    
     
     //private Transform groundCheck;          // A position marking where to check if the player is grounded.
     private bool grounded = false;			// Whether or not the player is grounded.
 
-    public GameObject Projectile;           //projetile prefab
+    // spell prefabs
+    public GameObject Projectile;           
     public GameObject siphon;
     public GameObject ZombieHands;
     public GameObject MeleeAttack;
-    private Rigidbody2D playerRb;           //cache playerRb
-    //private SpriteRenderer playerSR;        // cahce playerSpriteR
+
+    // ability cooldowns - indicate how often ability can be cast
+    public float meleeCoolDown;
+    public float projectileCoolDown;
+    public float siphonCoolDown;
+    public float handCoolDown;
+
+    // cooldown timers - indicate when ability can be cast
+    private float meleeTimer;
+    private float projectileTimer;
+    private float siphonTimer;
+    private float handTimer;
 
     //player stats
     public int soulCount = 0;
     public bool playerDead = false;
 
+    // UI text
     public Text soulText;
     public Text healthText;
     public Text gameOverText;
-    private Animator animator;
+    
 
+    // triggers
     public bool gameOver = false;
     public bool rangedUnlocked = false;
     public bool siphonUnlocked = false;
     public bool zombieHandsUnlocked = false;
 
+ 
+
+
     // Use this for initialization
-    void Awake ()
+    void Start ()
     {
+        running = "playerRun";
+        jumping = "playerJump";
+        throwing = "playerThrow";
+        idling = "playerIdle";
+        dead = "playerDead";
+        meleeing = "playerMelee";
         animator = GetComponent<Animator>();
         Health = maxHealth;
         Mobile = true;
-        playerRb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         setSoulText(soulCount);
         setHealthText();
-        //playerSR = GetComponent<SpriteRenderer>();
-        // Setting up references.
-        //groundCheck = transform.Find("groundCheck");
+
+        // initialize timers
+        //meleeTimer = projectileTimer = siphonTimer = handTimer = 0f;
+
 
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {        
         if (!gameOver)
         {
             setHealthText();
@@ -78,30 +94,31 @@ public class PlayerController : CharacterTemplate {
                 if (Input.GetButtonDown("Jump") && grounded)
                 {
                     jump = true;
-                    animator.SetTrigger("playerJump");
+                    animator.SetTrigger(jumping);
                 }
+
+                // melee
                 if (Input.GetButtonDown("Melee"))
                 {
-                    CastSpell(MeleeAttack);
-                    animator.SetTrigger("playerMelee");
-                }
-                if (Input.GetButtonDown("Fire1") && rangedUnlocked)
-                {
-                    CastSpell(Projectile);
-                    animator.SetTrigger("playerThrow");
+                    CastSpell(MeleeAttack, ref meleeTimer, meleeCoolDown, true, meleeing);                    
                 }
 
-                if (Input.GetButtonDown("Fire2") && siphonUnlocked)
+                // projectile
+                if (Input.GetButtonDown("Fire1"))
                 {
-                    Ability.immobilize(this);
-                    CastSpell(siphon);
-                    animator.SetTrigger("playerIdle");
+                    CastSpell(Projectile, ref projectileTimer, projectileCoolDown, rangedUnlocked, throwing);                    
                 }
 
-                if (Input.GetButtonDown("Fire3") && zombieHandsUnlocked)
+                // siphon
+                if (Input.GetButtonDown("Fire2") && grounded)
+                {                    
+                    CastSpell(siphon, ref siphonTimer, siphonCoolDown, siphonUnlocked, idling);                    
+                }
+
+                // hand
+                if (Input.GetButtonDown("Fire3"))
                 {
-                    CastZombieHands(ZombieHands);
-                    animator.SetTrigger("playerThrow");
+                    CastSpell(ZombieHands, ref handTimer, handCoolDown, zombieHandsUnlocked, throwing);                    
                 }
             }
         }
@@ -118,7 +135,15 @@ public class PlayerController : CharacterTemplate {
         {
             if (Mobile)
             {
-                Move();                
+                float h = Input.GetAxisRaw("Horizontal");
+                Move(h);
+                if (jump)
+                {
+                    Jump();
+                    jump = false;
+                    grounded = false;
+                }
+                                   
             }
         }
         else if (!playerDead)
@@ -127,26 +152,31 @@ public class PlayerController : CharacterTemplate {
         }
     }
     
-    // Fire Projectile
     
-    void CastSpell(GameObject prefab)
+    
+    void CastSpell(GameObject prefab, ref float timer, float cooldown, bool unlocked, string trigger)
     {
-        var spell = Instantiate(prefab).GetComponent<Ability>();        
-        spell.Init(transform.position + transform.right * 0.2f, transform.right, this);
-    }
+        if(Time.time > timer && unlocked)
+        {
+            
+            timer = Time.time + cooldown;
+            var spell = Instantiate(prefab).GetComponent<Ability>();
+            spell.Init(this);
 
+            animator.SetTrigger(trigger);
+        }
+        
+    }
+    /*
     void CastZombieHands(GameObject prefab)
     {
         var spell = Instantiate(prefab).GetComponent<Ability>();
         var spell_direction = transform.up;
-        var player_direction = transform.right;
-
-        if (!facingRight)
-            player_direction *= -1;
+        var player_direction = transform.right;        
 
         spell.Init(transform.position + player_direction * 2f, spell_direction, this);
     }
-
+    */
     // Handle Collisions
     void OnCollisionEnter2D(Collision2D coll)
     {
@@ -160,48 +190,7 @@ public class PlayerController : CharacterTemplate {
             setSoulText(soulCount);
         }
          
-    }
-
-    void Move()
-    {
-        // Cache the horizontal input.
-        float h = Input.GetAxisRaw("Horizontal");
-        if (playerRb.velocity.x == 0 || !Mobile)
-        {
-            animator.SetTrigger("playerIdle");
-        }
-        else
-        {
-            animator.SetTrigger("playerRun");
-        }
-
-        // If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
-        if (h * playerRb.velocity.x < maxSpeed)
-        {            
-            playerRb.AddForce(Vector2.right * h * moveForce);
-        }
-
-        // cap speed
-        if (Mathf.Abs(playerRb.velocity.x) > maxSpeed)
-            playerRb.velocity = new Vector2(Mathf.Sign(playerRb.velocity.x) * maxSpeed, playerRb.velocity.y);
-
-        // flip player
-        if (h > 0f && transform.right.x < 0f
-            || h < 0f && transform.right.x > 0f)
-            transform.right *= -1f;
-
-
-        // If the player should jump...
-        if (jump)
-        {
-            // Add a vertical force to the player.
-            playerRb.AddForce(new Vector2(0f, jumpForce));
-
-            // Make sure the player can't jump again until the jump conditions from Update are satisfied.
-            jump = false;
-            grounded = false;
-        }
-    }
+    }    
 
     public override bool ApplyDamage(float damage, Vector3 position, float recoil)
     {        

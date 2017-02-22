@@ -11,12 +11,14 @@ public abstract class Ability : MonoBehaviour {
     public float lifeTime;              // how long spell lives
     public float recoilForce;           // pushback
     public string targetTag;            // "Enemy" or "Player"
+    protected float offset;
 
-    public virtual void Init(Vector3 pos, Vector3 direc, CharacterTemplate chr)
+    public virtual void Init(CharacterTemplate chr)
     {
+        //Debug.DrawRay(chr.transform.position, transform.right,Color.red,2f);
         targetTag = chr.GetComponent<PlayerController>() ? "Enemy" : "Player";
-        transform.position = pos;
-        direction = direc;
+        transform.position = chr.transform.position + (offset * chr.transform.right);
+        direction = chr.transform.right;
 
     }  
     public virtual void Destruct()
@@ -29,5 +31,6 @@ public abstract class Ability : MonoBehaviour {
     {
         chr.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         chr.GetComponent<CharacterTemplate>().Mobile = false;
+        chr.Idle();
     }    
 }

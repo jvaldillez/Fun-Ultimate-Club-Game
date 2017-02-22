@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ZombieHands : Ability
-{
-    //private bool hit = false;       // true if hits an enemy        
-    //private Enemy victim;           // Enemy we hit
-    //private float timer;            // counts lifetime
+{    
+    // constants 
     private float maxHeight = 1f;
-    private float minHeight = 0.5f;
-    // states
-    //private static bool up;
-    //private static bool down;
+    //private float minHeight = 0.5f;
+    private float distanceFromPlayer = 2f;
+    private float maxCastHeight = 7f;
 
-    private static List<Enemy> victims;
+    private List<Enemy> victims;
 
 
     void Start()
@@ -31,7 +28,7 @@ public class ZombieHands : Ability
             if (transform.localScale.y > maxHeight)
                 direction *= -1f;
         
-        if(transform.localScale.y < minHeight)
+        if(transform.localScale.y <= 0f)
         {
             Destruct();
         }
@@ -47,13 +44,7 @@ public class ZombieHands : Ability
             immobilize(victim);
             victim.ApplyDamage(damage);
             victims.Add(victim);
-        }
-        else if (coll.tag == "Ground")
-        {
-            var groundT = coll.transform;
-            var groundC = coll.GetComponent<SpriteRenderer>();
-            transform.position += new Vector3(0f, (groundT.position.y + groundC.bounds.size.y) - (transform.position.y - GetComponent<SpriteRenderer>().bounds.size.y) - 0.5f, 0f);            
-        }
+        }       
     }
 
     void OnTriggerExit2D(Collider2D coll)
@@ -71,6 +62,24 @@ public class ZombieHands : Ability
                 vic.Mobile = true;
 
         base.Destruct();
+
+    }
+
+    public override void Init(CharacterTemplate chr)
+    {
+
+        var xhit = Physics2D.Raycast(chr.transform.position, chr.transform.right, distanceFromPlayer, 1 << LayerMask.NameToLayer("Ground"));
+        if (!xhit)
+        {
+            var pos = chr.transform.position + chr.transform.right * distanceFromPlayer;
+
+            var yhit = Physics2D.Raycast(pos, -transform.up, maxCastHeight, 1 << LayerMask.NameToLayer("Ground"));
+            transform.position = new Vector2(pos.x, yhit.transform.position.y);
+            direction = transform.up;
+            targetTag = chr.GetComponent<PlayerController>() ? "Enemy" : "Player";
+        }
+        else
+            Destruct();
 
     }
 

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class AttackState : IEnemyState
 
@@ -55,7 +56,7 @@ public class AttackState : IEnemyState
     private void Swing()
     {
         enemy.DoNothing();
-        if (coolDownTimer < Time.time)
+        if (coolDownTimer < Time.time && enemy.Mobile)
         {
             enemy.CastSpell(enemy.meleeAttack);
             coolDownTimer = Time.time + enemy.attackCoolDown;
@@ -63,4 +64,14 @@ public class AttackState : IEnemyState
         }        
     }
 
+    public void ToDeadState()
+    {
+        enemy.currentState = enemy.deadState;
+        
+    }
+
+    public void OnCollisionEnter2D(Collision2D coll)
+    {
+       
+    }
 }
