@@ -44,15 +44,7 @@ public class ZombieHands : Ability
             immobilize(victim);
             victim.ApplyDamage(damage);
             victims.Add(victim);
-        }
-        /*
-        else if (coll.tag == "Ground")
-        {
-            var groundT = coll.transform;
-            var groundC = coll.GetComponent<SpriteRenderer>();
-            transform.position += new Vector3(0f, (groundT.position.y + groundC.bounds.size.y) - (transform.position.y - GetComponent<SpriteRenderer>().bounds.size.y) - 0.5f, 0f);            
-        }
-        */
+        }       
     }
 
     void OnTriggerExit2D(Collider2D coll)
@@ -77,17 +69,17 @@ public class ZombieHands : Ability
     {
 
         var xhit = Physics2D.Raycast(chr.transform.position, chr.transform.right, distanceFromPlayer, 1 << LayerMask.NameToLayer("Ground"));
-        if(!xhit)
+        if (!xhit)
         {
             var pos = chr.transform.position + chr.transform.right * distanceFromPlayer;
 
             var yhit = Physics2D.Raycast(pos, -transform.up, maxCastHeight, 1 << LayerMask.NameToLayer("Ground"));
             transform.position = new Vector2(pos.x, yhit.transform.position.y);
-           
+            direction = transform.up;
+            targetTag = chr.GetComponent<PlayerController>() ? "Enemy" : "Player";
         }
-        direction = transform.up;
-       
-        targetTag = chr.GetComponent<PlayerController>() ? "Enemy" : "Player";
+        else
+            Destruct();
 
     }
 

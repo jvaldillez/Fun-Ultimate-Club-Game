@@ -40,7 +40,7 @@ public class PatrolState : IEnemyState
 
     private void Look()
     {
-        // this is fucking stupid - layermask didnt work so i have to add 0.5 so ray doesnt intersect with the enemy
+        
         RaycastHit2D hit = Physics2D.Raycast(enemy.transform.position,
                                                 enemy.transform.right,
                                                     enemy.distanceThreshold,

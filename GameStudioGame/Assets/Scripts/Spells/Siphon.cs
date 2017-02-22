@@ -12,6 +12,7 @@ public class Siphon : Ability
     
     void Start ()
     {
+        offset = 0f;
        //player = FindObjectOfType<PlayerController>();
        timer = 0f;
     }

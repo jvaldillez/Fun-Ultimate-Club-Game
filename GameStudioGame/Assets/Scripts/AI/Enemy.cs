@@ -21,8 +21,6 @@ public class Enemy : CharacterTemplate {
     [HideInInspector]
     public bool facingRight = true;
 
-    private Animator animator;
-
     // AI stuff
     [HideInInspector] public PatrolState patrolState;
     [HideInInspector] public ChaseState chaseState;
@@ -32,7 +30,14 @@ public class Enemy : CharacterTemplate {
     [HideInInspector] public Transform chaseTarget;   
 
 
-    void Start () {
+    void Start ()
+    {
+        // animation triggers
+        running = "enemyRun";        
+        idling = "enemyIdle";
+        dead = "enemyDead";
+        meleeing = "enemyAttack";
+
         Health = maxHealth;
         Mobile = true;
         
@@ -81,10 +86,9 @@ public class Enemy : CharacterTemplate {
     public void CastSpell(GameObject prefab)
     {
         var spell = Instantiate(prefab).GetComponent<Ability>();
-        var direction = transform.right;
-        if (!facingRight)
-            direction *= -1;
+           
         spell.Init(this);
+        animator.SetTrigger("enemyAttack");
     }
 
     public void DestroyRb()

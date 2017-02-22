@@ -37,7 +37,7 @@ public class PlayerController : CharacterTemplate {
     public Text soulText;
     public Text healthText;
     public Text gameOverText;
-    private Animator animator;
+    
 
     // triggers
     public bool gameOver = false;
@@ -45,18 +45,18 @@ public class PlayerController : CharacterTemplate {
     public bool siphonUnlocked = false;
     public bool zombieHandsUnlocked = false;
 
-    //animator triggers
-    private string walking = "player",
-        jumping = "playerJump",
-        throwing = "playerThrow",
-        idling = "playerIdle",
-        dead = "playerDead",
-        meleeing = "playerMelee";
+ 
 
 
     // Use this for initialization
     void Start ()
     {
+        running = "playerRun";
+        jumping = "playerJump";
+        throwing = "playerThrow";
+        idling = "playerIdle";
+        dead = "playerDead";
+        meleeing = "playerMelee";
         animator = GetComponent<Animator>();
         Health = maxHealth;
         Mobile = true;
@@ -72,7 +72,7 @@ public class PlayerController : CharacterTemplate {
 
     // Update is called once per frame
     void Update()
-    {
+    {        
         if (!gameOver)
         {
             setHealthText();

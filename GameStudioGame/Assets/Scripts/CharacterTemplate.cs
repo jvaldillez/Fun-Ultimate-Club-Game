@@ -13,9 +13,19 @@ public abstract class CharacterTemplate : MonoBehaviour
     private float health;  
     private bool mobile;
 
+    //animator triggers    
+    protected string running,
+        jumping,
+        throwing,
+        idling,
+        dead,
+        meleeing;
+
     //cache components
     [HideInInspector]  
     public Rigidbody2D rb;
+    [HideInInspector]
+    public Animator animator;
 
     /// <summary>
     /// health property
@@ -83,20 +93,37 @@ public abstract class CharacterTemplate : MonoBehaviour
 
     public virtual void Move(float input)
     {
-       
+        if (mobile)
+        {
             // flip player
             if (input > 0f && transform.right.x < 0f
                 || input < 0f && transform.right.x > 0f)
                 transform.right *= -1f;
 
+            // add velocity
             rb.velocity = new Vector2(input * movementSpeed, rb.velocity.y);
-     
+            
+            //animate
+            if (input != 0f)
+                animator.SetTrigger(running);
+            else
+                animator.SetTrigger(idling);
+        }
+        else
+            animator.SetTrigger(idling);
+            
 
+    }
+
+    public void Idle()
+    {
+        animator.SetTrigger(idling);
     }
 
     public virtual void Jump()
     {
         rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+        animator.SetTrigger(jumping);
     }
     public virtual void Destruct()
     {

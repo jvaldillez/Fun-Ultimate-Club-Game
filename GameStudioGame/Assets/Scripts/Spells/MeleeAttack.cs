@@ -5,9 +5,16 @@ using UnityEngine;
 
 public class MeleeAttack: Ability
 {
-    void Start()
+    void Awake()
     {
-        Invoke("Destruct", lifeTime);
+        
+        offset = 0.5f;
+        //Invoke("Destruct", lifeTime);
+    }
+
+    void Update()
+    {
+          Destruct();
     }
 
     void OnTriggerEnter2D(Collider2D coll)
