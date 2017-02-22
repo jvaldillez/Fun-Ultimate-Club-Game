@@ -65,12 +65,13 @@ public class Siphon : Ability
         base.Destruct();
     }
     
-    public override void Init(Vector3 pos, Vector3 direc, CharacterTemplate chr)
+    public override void Init(CharacterTemplate chr)
     {
         //var player = FindObjectOfType<PlayerController>().transform;
         //transform.parent = player;
         player = chr.GetComponent<PlayerController>();
-        base.Init(pos, direc, chr);
+        immobilize(chr);
+        base.Init(chr);
     }
     
 }

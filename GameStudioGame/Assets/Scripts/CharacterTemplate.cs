@@ -83,13 +83,14 @@ public abstract class CharacterTemplate : MonoBehaviour
 
     public virtual void Move(float input)
     {
+       
+            // flip player
+            if (input > 0f && transform.right.x < 0f
+                || input < 0f && transform.right.x > 0f)
+                transform.right *= -1f;
 
-        // flip player
-        if (input > 0f && transform.right.x < 0f
-            || input < 0f && transform.right.x > 0f)
-            transform.right *= -1f;
-
-        rb.velocity = new Vector2(input * movementSpeed, rb.velocity.y);
+            rb.velocity = new Vector2(input * movementSpeed, rb.velocity.y);
+     
 
     }
 

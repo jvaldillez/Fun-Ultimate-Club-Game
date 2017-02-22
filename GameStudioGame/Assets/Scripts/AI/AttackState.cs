@@ -56,7 +56,7 @@ public class AttackState : IEnemyState
     private void Swing()
     {
         enemy.DoNothing();
-        if (coolDownTimer < Time.time)
+        if (coolDownTimer < Time.time && enemy.Mobile)
         {
             enemy.CastSpell(enemy.meleeAttack);
             coolDownTimer = Time.time + enemy.attackCoolDown;

@@ -12,11 +12,11 @@ public abstract class Ability : MonoBehaviour {
     public float recoilForce;           // pushback
     public string targetTag;            // "Enemy" or "Player"
 
-    public virtual void Init(Vector3 pos, Vector3 direc, CharacterTemplate chr)
+    public virtual void Init(CharacterTemplate chr)
     {
         targetTag = chr.GetComponent<PlayerController>() ? "Enemy" : "Player";
-        transform.position = pos;
-        direction = direc;
+        transform.position = chr.transform.position;
+        direction = chr.transform.right;
 
     }  
     public virtual void Destruct()

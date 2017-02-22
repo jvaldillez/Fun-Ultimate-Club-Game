@@ -67,9 +67,13 @@ public class ChaseState : IEnemyState
 
     private void Chase()
     {
-        //move enemy towards player
-        var diff = Mathf.Sign(enemy.chaseTarget.position.x - enemy.transform.position.x);
-        enemy.Move(diff);
+        if(enemy.Mobile)
+        {
+            //move enemy towards player
+            var diff = Mathf.Sign(enemy.chaseTarget.position.x - enemy.transform.position.x);
+            enemy.Move(diff);
+        }
+        
     }
 
     public void ToDeadState()

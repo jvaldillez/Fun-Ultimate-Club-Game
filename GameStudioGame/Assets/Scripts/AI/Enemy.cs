@@ -76,32 +76,7 @@ public class Enemy : CharacterTemplate {
     {
         animator.SetTrigger("enemyIdle");
 
-    }
-    
-
-    // ChaseState
-    public void MoveTowardsPlayer()
-    {
-        // flip
-        var diff = transform.position.x - chaseTarget.position.x;
-        if ((diff > 0f && transform.right.x > 0f)
-            || (diff < 0f && transform.right.x < 0f))
-            transform.right *= -1f;      
-        
-
-        // add force!
-        if (GetComponent<Rigidbody2D>().velocity.x < maxSpeed)
-            GetComponent<Rigidbody2D>().AddForce(transform.right * moveForce);
-
-        // cap speed!
-        if (Mathf.Abs(GetComponent<Rigidbody2D>().velocity.x) > maxSpeed)           
-            GetComponent<Rigidbody2D>().velocity = new Vector2(Mathf.Sign(GetComponent<Rigidbody2D>().velocity.x) * maxSpeed, GetComponent<Rigidbody2D>().velocity.y);
-
-        
-       
-        animator.SetTrigger("enemyRun");
-    }
-    
+    }    
 
     public void CastSpell(GameObject prefab)
     {
@@ -109,7 +84,7 @@ public class Enemy : CharacterTemplate {
         var direction = transform.right;
         if (!facingRight)
             direction *= -1;
-        spell.Init(transform.position + direction * 1f, direction, this);
+        spell.Init(this);
     }
 
     public void DestroyRb()
