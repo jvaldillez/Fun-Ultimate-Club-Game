@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class ChaseState : IEnemyState
 
@@ -15,11 +16,12 @@ public class ChaseState : IEnemyState
 
     public void UpdateState()
     {
-        Look();       
+        Look();        
     }
 
     public void FixedUpdateState()
     {
+       
         Chase();
     }
         
@@ -42,23 +44,42 @@ public class ChaseState : IEnemyState
 
     private void Look()
     {
-
+        
         var distance = Vector2.Distance(enemy.chaseTarget.position, enemy.transform.position);
-        if (distance > enemy.distanceThreshold)
-        {           
+        var direcOfPlayer = Vector3.Normalize(enemy.chaseTarget.position - enemy.transform.position);
+        var hit = Physics2D.Raycast(enemy.transform.position, direcOfPlayer, enemy.distanceThreshold, 3 << 8);
+        
+        // see raycast
+        Debug.DrawRay(enemy.transform.position,
+                           direcOfPlayer * enemy.distanceThreshold,
+                                Color.red);
+
+        if (!hit || hit.collider.tag != "Player")
+        {
             ToPatrolState();
         }
         else if (distance < enemy.attackRadius)
         {
             ToAttackState();
         }
+        
     }
 
     private void Chase()
     {
         //move enemy towards player
-        enemy.MoveTowardsPlayer();
+        var diff = Mathf.Sign(enemy.chaseTarget.position.x - enemy.transform.position.x);
+        enemy.Move(diff);
     }
 
+    public void ToDeadState()
+    {
+        enemy.currentState = enemy.deadState;        
+        
+    }
 
+    public void OnCollisionEnter2D(Collision2D coll)
+    {
+       
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class AttackState : IEnemyState
 
@@ -63,4 +64,14 @@ public class AttackState : IEnemyState
         }        
     }
 
+    public void ToDeadState()
+    {
+        enemy.currentState = enemy.deadState;
+        
+    }
+
+    public void OnCollisionEnter2D(Collision2D coll)
+    {
+       
+    }
 }

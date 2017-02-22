@@ -4,11 +4,18 @@ using UnityEngine;
 
 public abstract class CharacterTemplate : MonoBehaviour
 {
+    // character constants
     public float maxHealth;
+    public float movementSpeed;
+    public float jumpSpeed;
+
+    //
     private float health;  
     private bool mobile;
-    //public Color normalColor;    
 
+    //cache components
+    [HideInInspector]  
+    public Rigidbody2D rb;
 
     /// <summary>
     /// health property
@@ -55,7 +62,7 @@ public abstract class CharacterTemplate : MonoBehaviour
     // Recoil when character is hit
     public virtual void PushBack(Vector3 sourcePosition, float recoil)
     {
-
+        /*
         var forceVector = new Vector2(recoil, 100f);
 
         if (transform.position.x < sourcePosition.x)
@@ -64,8 +71,32 @@ public abstract class CharacterTemplate : MonoBehaviour
         }
 
         GetComponent<Rigidbody2D>().AddForce(forceVector);
+        */
+        var velVec = new Vector2(1f, 0.3f) * recoil;
+        if (transform.position.x < sourcePosition.x)    
+        {
+            velVec = new Vector2(-velVec.x, velVec.y);
+        }
+        GetComponent<Rigidbody2D>().velocity = velVec;
+
+    }    
+
+    public virtual void Move(float input)
+    {
+
+        // flip player
+        if (input > 0f && transform.right.x < 0f
+            || input < 0f && transform.right.x > 0f)
+            transform.right *= -1f;
+
+        rb.velocity = new Vector2(input * movementSpeed, rb.velocity.y);
+
     }
 
+    public virtual void Jump()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+    }
     public virtual void Destruct()
     {
         Destroy(gameObject);

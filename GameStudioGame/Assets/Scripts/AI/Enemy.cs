@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Enemy : CharacterTemplate {
 
-    //public float health;                        // enemy starting health
+    
     public GameObject soul;                     // soul prefab to drop when dead
-    private PlayerController player;            // cached player object
+    
     public float distanceThreshold;        // detection radius
     public float moveForce;                     // Amount of force added to move the player left and right.
     public float maxSpeed;                      // The fastest the player can travel in the x axis.
@@ -27,6 +27,7 @@ public class Enemy : CharacterTemplate {
     [HideInInspector] public PatrolState patrolState;
     [HideInInspector] public ChaseState chaseState;
     [HideInInspector] public AttackState attackState;
+    [HideInInspector] public DeadState deadState;
     [HideInInspector] public IEnemyState currentState;
     [HideInInspector] public Transform chaseTarget;   
 
@@ -34,8 +35,8 @@ public class Enemy : CharacterTemplate {
     void Start () {
         Health = maxHealth;
         Mobile = true;
-        //cache player gameObject
-        player = FindObjectOfType<PlayerController>();
+        
+        rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
         currentState = patrolState;        
@@ -46,7 +47,7 @@ public class Enemy : CharacterTemplate {
         patrolState = new PatrolState(this);
         chaseState = new ChaseState(this);
         attackState = new AttackState(this);
-
+        deadState = new DeadState(this);
     }
 	
 	void Update ()
@@ -54,8 +55,9 @@ public class Enemy : CharacterTemplate {
         // handle death
         if (Health <= 0f && !enemyDead)
         {
+            currentState.ToDeadState();
             Instantiate(soul, transform.position, Quaternion.identity);
-            //Destroy(gameObject);
+            
             animator.SetTrigger("enemyDead");
             enemyDead = true;
             Invoke("Destruct", 2f);
@@ -110,13 +112,14 @@ public class Enemy : CharacterTemplate {
         spell.Init(transform.position + direction * 1f, direction, this);
     }
 
-    /*void OnCollisionEnter2D(Collision2D coll)
+    public void DestroyRb()
     {
-        if(coll.gameObject.tag == "Player" && !enemyDead)
-        {
-            coll.gameObject.GetComponent<PlayerController>().ApplyDamage(damage, transform.position, recoilForce);
-            animator.SetTrigger("enemyAttack");
-        }
+        Destroy(rb);
     }
-    */
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        currentState.OnCollisionEnter2D(coll);
+    }
+    
 }
