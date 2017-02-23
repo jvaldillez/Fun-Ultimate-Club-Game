@@ -10,6 +10,11 @@ public class PlayerController : CharacterTemplate {
     
     //private Transform groundCheck;          // A position marking where to check if the player is grounded.
     private bool grounded = false;			// Whether or not the player is grounded.
+    public bool onWall = false;
+
+    public float wallJumpSpeed;
+    
+    //public bool wallJump = false;
 
     // spell prefabs
     public GameObject Projectile;           
@@ -91,11 +96,17 @@ public class PlayerController : CharacterTemplate {
                 //grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
 
                 // If the jump button is pressed and the player is grounded then the player should jump.
-                if (Input.GetButtonDown("Jump") && grounded)
+                if (Input.GetButtonDown("Jump") && grounded && !onWall)
                 {
                     jump = true;
                     animator.SetTrigger(jumping);
                 }
+                else if (Input.GetButtonDown("Jump") && onWall)
+                {
+                    jump = true;
+                    animator.SetTrigger(jumping);
+                }
+                
 
                 // melee
                 if (Input.GetButtonDown("Melee"))
@@ -137,11 +148,17 @@ public class PlayerController : CharacterTemplate {
             {
                 float h = Input.GetAxisRaw("Horizontal");
                 Move(h);
-                if (jump)
+                if (jump && !onWall)
                 {
                     Jump();
                     jump = false;
                     grounded = false;
+                }
+                else if (jump && onWall)
+                {
+                    WallJump();
+                    //wallJump = false;
+                    //onWall = false;
                 }
                                    
             }
@@ -152,7 +169,10 @@ public class PlayerController : CharacterTemplate {
         }
     }
     
-    
+    void WallJump()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, wallJumpSpeed);
+    }
     
     void CastSpell(GameObject prefab, ref float timer, float cooldown, bool unlocked, string trigger)
     {
@@ -189,8 +209,21 @@ public class PlayerController : CharacterTemplate {
             soulCount++;
             setSoulText(soulCount);
         }
-         
-    }    
+
+        if (coll.gameObject.tag == "Wall")
+        {
+            onWall = true;
+        }
+
+    }
+
+    void OnCollisionExit2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag == "Wall")
+        {
+            onWall = false;
+        }
+    }
 
     public override bool ApplyDamage(float damage, Vector3 position, float recoil)
     {        
