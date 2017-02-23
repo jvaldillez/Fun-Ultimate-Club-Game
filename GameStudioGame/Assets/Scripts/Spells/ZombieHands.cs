@@ -15,7 +15,7 @@ public class ZombieHands : Ability
 
     void Start()
     {
-        
+
         victims = new List<Enemy>();
     }
 
@@ -68,18 +68,29 @@ public class ZombieHands : Ability
     public override void Init(CharacterTemplate chr)
     {
 
+        
+
         var xhit = Physics2D.Raycast(chr.transform.position, chr.transform.right, distanceFromPlayer, 1 << LayerMask.NameToLayer("Ground"));
         if (!xhit)
         {
             var pos = chr.transform.position + chr.transform.right * distanceFromPlayer;
 
             var yhit = Physics2D.Raycast(pos, -transform.up, maxCastHeight, 1 << LayerMask.NameToLayer("Ground"));
-            transform.position = new Vector2(pos.x, yhit.transform.position.y);
-            direction = transform.up;
-            targetTag = chr.GetComponent<PlayerController>() ? "Enemy" : "Player";
+            if (yhit)
+            {
+                transform.position = new Vector2(pos.x, yhit.transform.position.y);
+
+                direction = transform.up;
+                targetTag = chr.GetComponent<PlayerController>() ? "Enemy" : "Player";
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+
         }
         else
-            Destruct();
+            Destroy(gameObject);
 
     }
 

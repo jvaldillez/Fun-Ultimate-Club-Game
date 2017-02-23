@@ -29,13 +29,13 @@ public class AttackState : IEnemyState
     public void ToPatrolState()
     {
         enemy.currentState = enemy.patrolState;
-        coolDownTimer = 0f;
+        
     }
 
     public void ToChaseState()
     {
         enemy.currentState = enemy.chaseState;
-        coolDownTimer = 0f;
+        
     }
 
     public void ToAttackState()
