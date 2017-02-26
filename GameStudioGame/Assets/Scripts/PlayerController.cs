@@ -157,6 +157,7 @@ public class PlayerController : CharacterTemplate {
                 else if (jump && onWall)
                 {
                     WallJump();
+                    jump = false;
                     //wallJump = false;
                     //onWall = false;
                 }
