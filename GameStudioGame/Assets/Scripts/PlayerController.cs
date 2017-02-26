@@ -35,8 +35,11 @@ public class PlayerController : CharacterTemplate {
 
     // UI text
     public Text soulText;
-    public Text healthText;
+    //public Text healthText;
     public Text gameOverText;
+
+    //Health slider
+    public Slider healthBar;
     
 
     // triggers
@@ -62,7 +65,7 @@ public class PlayerController : CharacterTemplate {
         Mobile = true;
         rb = GetComponent<Rigidbody2D>();
         setSoulText(soulCount);
-        setHealthText();
+        setHealthBar();
 
         // initialize timers
         //meleeTimer = projectileTimer = siphonTimer = handTimer = 0f;
@@ -75,7 +78,7 @@ public class PlayerController : CharacterTemplate {
     {        
         if (!gameOver)
         {
-            setHealthText();
+            setHealthBar();
             if (Health < 0f && !playerDead)
             {
                 //Destroy(gameObject);
@@ -216,9 +219,9 @@ public class PlayerController : CharacterTemplate {
         soulText.text = "Souls Collected:" + count.ToString();
     }
 
-    public void setHealthText()
+    public void setHealthBar()
     {
-        healthText.text = "Health: " + Health.ToString() + "/10";
+        healthBar.value = Health;
     }
 
 }
