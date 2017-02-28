@@ -23,6 +23,7 @@ public class MeleeAttack: Ability
         if (coll.tag == targetTag)
         {
             coll.GetComponent<CharacterTemplate>().ApplyDamage(damage, transform.position, recoilForce);
+
         }
     }
 }
