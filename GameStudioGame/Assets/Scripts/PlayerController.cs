@@ -6,28 +6,36 @@ using UnityEngine.UI;
 public class PlayerController : CharacterTemplate {
         
     [HideInInspector]
-    public bool jump = false;				// Condition for whether the player should jump.    
+    public bool jump = false;				// Condition for whether the player should jump. 
+    public bool dash = false;               // Condition for whether the player should dash.
     
     //private Transform groundCheck;          // A position marking where to check if the player is grounded.
     private bool grounded = false;			// Whether or not the player is grounded.
+    private bool dashDone = false;          // Whether or not the player has done one dash
 
     // spell prefabs
     public GameObject Projectile;           
     public GameObject siphon;
     public GameObject ZombieHands;
     public GameObject MeleeAttack;
+    public GameObject SilenceAlert;
+    public GameObject ChokeHold;
 
     // ability cooldowns - indicate how often ability can be cast
     public float meleeCoolDown;
     public float projectileCoolDown;
     public float siphonCoolDown;
     public float handCoolDown;
+    public float silenceCoolDown;
+    public float chokeHoldCoolDown;
 
     // cooldown timers - indicate when ability can be cast
     private float meleeTimer;
     private float projectileTimer;
     private float siphonTimer;
     private float handTimer;
+    private float silenceTimer;
+    private float chokeHoldTimer;
 
     //player stats
     public int soulCount = 0;
@@ -47,6 +55,8 @@ public class PlayerController : CharacterTemplate {
     public bool rangedUnlocked = false;
     public bool siphonUnlocked = false;
     public bool zombieHandsUnlocked = false;
+    public bool silenceUnlocked = true;
+    public bool chokeHoldUnlocked = true;
 
  
 
@@ -123,6 +133,25 @@ public class PlayerController : CharacterTemplate {
                 {
                     CastSpell(ZombieHands, ref handTimer, handCoolDown, zombieHandsUnlocked, throwing);                    
                 }
+
+                // dash
+                if (Input.GetButtonDown("Dash"))
+                {
+                    dash = true;
+                    animator.SetTrigger(running);
+                }
+
+                // silence
+                if (Input.GetButtonDown("Silence"))
+                {
+                    CastSpell(SilenceAlert, ref silenceTimer, silenceCoolDown, silenceUnlocked, throwing);
+                }
+
+                // choke hold
+                if (Input.GetButtonDown("ChokeHold"))
+                {
+                    CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing);
+                }
             }
         }
         else if (!playerDead)
@@ -145,6 +174,16 @@ public class PlayerController : CharacterTemplate {
                     Jump();
                     jump = false;
                     grounded = false;
+                }
+
+                //if the player should dash
+                if (dash)
+                {
+                    Dash();
+
+                    // Make sure player can't dash twice in midair
+                    dash = false;
+                    dashDone = true;
                 }
                                    
             }
@@ -184,7 +223,11 @@ public class PlayerController : CharacterTemplate {
     void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll.gameObject.tag == "Ground" || coll.gameObject.tag == "Enemy")
+        {
             grounded = true;
+            dashDone = false;
+        }
+            
 
         if(coll.gameObject.tag == "loot")
         {
@@ -194,6 +237,17 @@ public class PlayerController : CharacterTemplate {
         }
          
     }    
+
+    // Continuous Collisions
+    void OnCollisionStay2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag == "Ground")
+        {
+            dashDone = false;
+        }
+    }
+
+
 
     public override bool ApplyDamage(float damage, Vector3 position, float recoil)
     {        

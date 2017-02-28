@@ -8,6 +8,7 @@ public abstract class CharacterTemplate : MonoBehaviour
     public float maxHealth;
     public float movementSpeed;
     public float jumpSpeed;
+    public float dashSpeed;
 
     //
     private float health;  
@@ -125,6 +126,24 @@ public abstract class CharacterTemplate : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
         animator.SetTrigger(jumping);
     }
+
+    public virtual void Dash()
+    {
+        if (transform.right.x > 0f)
+        {
+            rb.velocity = new Vector2(dashSpeed, 0f);
+        }
+
+        else
+        {
+            rb.velocity = new Vector2(-dashSpeed, 0f);
+        }
+        
+        //rb.AddForce(new Vector2(dashSpeed, 0f));
+    }
+
+
+
     public virtual void Destruct()
     {
         Destroy(gameObject);
