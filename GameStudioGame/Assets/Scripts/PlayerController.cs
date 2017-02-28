@@ -55,8 +55,9 @@ public class PlayerController : CharacterTemplate {
     public bool rangedUnlocked = false;
     public bool siphonUnlocked = false;
     public bool zombieHandsUnlocked = false;
-    public bool silenceUnlocked = true;
-    public bool chokeHoldUnlocked = true;
+    public bool silenceUnlocked = false;
+    public bool chokeHoldUnlocked = false;
+    public bool dashUnlocked = false;
 
  
 
@@ -113,45 +114,59 @@ public class PlayerController : CharacterTemplate {
                 // melee
                 if (Input.GetButtonDown("Melee"))
                 {
-                    CastSpell(MeleeAttack, ref meleeTimer, meleeCoolDown, true, meleeing);                    
+                    CastSpell(MeleeAttack, ref meleeTimer, meleeCoolDown, true, meleeing);
                 }
 
                 // projectile
-                if (Input.GetButtonDown("Fire1"))
+                if (Input.GetButtonDown("Fire1") && rangedUnlocked)
                 {
-                    CastSpell(Projectile, ref projectileTimer, projectileCoolDown, rangedUnlocked, throwing);                    
+                    CastSpell(Projectile, ref projectileTimer, projectileCoolDown, rangedUnlocked, throwing);
                 }
-
-                // siphon
-                if (Input.GetButtonDown("Fire2") && grounded)
-                {                    
-                    CastSpell(siphon, ref siphonTimer, siphonCoolDown, siphonUnlocked, idling);                    
-                }
-
-                // hand
-                if (Input.GetButtonDown("Fire3"))
-                {
-                    CastSpell(ZombieHands, ref handTimer, handCoolDown, zombieHandsUnlocked, throwing);                    
-                }
-
-                // dash
-                if (Input.GetButtonDown("Dash"))
+                else if (Input.GetButtonDown("Fire1") && dashUnlocked)
                 {
                     dash = true;
                     animator.SetTrigger(running);
                 }
 
-                // silence
-                if (Input.GetButtonDown("Silence"))
+                // siphon
+                if (Input.GetButtonDown("Fire2") && grounded && siphonUnlocked)
+                {
+                    CastSpell(siphon, ref siphonTimer, siphonCoolDown, siphonUnlocked, idling);
+                }
+                else if (Input.GetButtonDown("Fire2") && silenceUnlocked)
                 {
                     CastSpell(SilenceAlert, ref silenceTimer, silenceCoolDown, silenceUnlocked, throwing);
                 }
 
-                // choke hold
-                if (Input.GetButtonDown("ChokeHold"))
+                // hand
+                if (Input.GetButtonDown("Fire3") && zombieHandsUnlocked)
+                {
+                    CastSpell(ZombieHands, ref handTimer, handCoolDown, zombieHandsUnlocked, throwing);
+                }
+                else if (Input.GetButtonDown("Fire3") && chokeHoldUnlocked)
                 {
                     CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing);
                 }
+
+                //    // dash
+                //    if (Input.GetButtonDown("Dash") && dashUnlocked)
+                //    {
+                //        dash = true;
+                //        animator.SetTrigger(running);
+                //    }
+
+                //    // silence
+                //    if (Input.GetButtonDown("Silence"))
+                //    {
+                //        CastSpell(SilenceAlert, ref silenceTimer, silenceCoolDown, silenceUnlocked, throwing);
+                //    }
+
+                //    // choke hold
+                //    if (Input.GetButtonDown("ChokeHold"))
+                //    {
+                //        CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing);
+                //    }
+                //}
             }
         }
         else if (!playerDead)
