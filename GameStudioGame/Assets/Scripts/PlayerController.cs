@@ -28,6 +28,7 @@ public class PlayerController : CharacterTemplate {
     public float handCoolDown;
     public float silenceCoolDown;
     public float chokeHoldCoolDown;
+    public float dashCoolDown;
 
     // cooldown timers - indicate when ability can be cast
     private float meleeTimer;
@@ -36,6 +37,7 @@ public class PlayerController : CharacterTemplate {
     private float handTimer;
     private float silenceTimer;
     private float chokeHoldTimer;
+    private float dashTimer;
 
     //player stats
     public int soulCount = 0;
@@ -122,10 +124,11 @@ public class PlayerController : CharacterTemplate {
                 {
                     CastSpell(Projectile, ref projectileTimer, projectileCoolDown, rangedUnlocked, throwing);
                 }
-                else if (Input.GetButtonDown("Fire1") && dashUnlocked)
+                else if (Input.GetButtonDown("Fire1") && dashUnlocked && Time.time >= dashTimer)
                 {
                     dash = true;
                     animator.SetTrigger(running);
+                    dashTimer = Time.time + dashCoolDown;
                 }
 
                 // siphon

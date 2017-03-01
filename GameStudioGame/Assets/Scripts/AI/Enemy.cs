@@ -117,8 +117,10 @@ public class Enemy : CharacterTemplate {
 
     void OnDrawGizmos()
     {
-        currentState.OnDrawGizmos();      
-        
+        if (currentState != null)
+        {
+            currentState.OnDrawGizmos();
+        }        
     }
 
     public void SetWaypoints()
