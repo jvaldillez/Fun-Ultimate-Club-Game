@@ -71,6 +71,7 @@ public abstract class CharacterTemplate : MonoBehaviour
     }
 
     // Recoil when character is hit
+    
     public virtual void PushBack(Vector3 sourcePosition, float recoil)
     {
         /*
@@ -91,16 +92,12 @@ public abstract class CharacterTemplate : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = velVec;
 
     }    
-
+    
     public virtual void Move(float input)
     {
+        Flip(input);
         if (mobile)
         {
-            // flip player
-            if (input > 0f && transform.right.x < 0f
-                || input < 0f && transform.right.x > 0f)
-                transform.right *= -1f;
-
             // add velocity
             rb.velocity = new Vector2(input * movementSpeed, rb.velocity.y);
             
@@ -114,6 +111,18 @@ public abstract class CharacterTemplate : MonoBehaviour
             animator.SetTrigger(idling);
             
 
+    }
+
+    public void Flip(float input)
+    {
+
+        if (mobile)
+        {
+            // flip player
+            if (input > 0f && transform.right.x < 0f
+                || input < 0f && transform.right.x > 0f)
+                transform.right *= -1f;
+        }
     }
 
     public void Idle()

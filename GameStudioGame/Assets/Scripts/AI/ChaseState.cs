@@ -28,7 +28,7 @@ public class ChaseState : IEnemyState
 
     public void ToPatrolState()
     {
-        enemy.chaseTarget = null;
+        //enemy.chaseTarget = null;
         enemy.currentState = enemy.patrolState;
     }
    
@@ -39,6 +39,8 @@ public class ChaseState : IEnemyState
 
     public void ToAttackState()
     {
+        var rb = enemy.GetComponent<Rigidbody2D>();
+        rb.velocity = new Vector2(0f, rb.velocity.y);
         enemy.currentState = enemy.attackState;
     }
 
@@ -56,7 +58,7 @@ public class ChaseState : IEnemyState
 
         if (!hit || hit.collider.tag != "Player")
         {
-            ToPatrolState();
+            ToAlertState();
         }
         else if (distance < enemy.attackRadius)
         {
@@ -84,5 +86,16 @@ public class ChaseState : IEnemyState
     public void OnCollisionEnter2D(Collision2D coll)
     {
        
+    }
+
+    public void ToAlertState()
+    {
+        
+        enemy.currentState = enemy.alertState;
+    }
+
+    public void OnDrawGizmos()
+    {
+
     }
 }

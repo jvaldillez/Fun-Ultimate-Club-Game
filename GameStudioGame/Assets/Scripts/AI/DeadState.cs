@@ -51,4 +51,13 @@ public class DeadState : IEnemyState
             
         }
     }
+
+    public void ToAlertState()
+    {
+        throw new NotImplementedException();
+    }
+    public void OnDrawGizmos()
+    {
+
+    }
 }

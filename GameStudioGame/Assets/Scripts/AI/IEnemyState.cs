@@ -12,7 +12,7 @@ public interface IEnemyState
 
     void ToPatrolState();
 
-   // void ToAlertState();
+    void ToAlertState();
 
     void ToChaseState();
 
@@ -21,4 +21,6 @@ public interface IEnemyState
     void ToDeadState();
 
     void OnCollisionEnter2D(Collision2D coll);
+
+    void OnDrawGizmos();
 }

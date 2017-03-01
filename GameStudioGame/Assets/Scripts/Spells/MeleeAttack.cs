@@ -9,12 +9,12 @@ public class MeleeAttack: Ability
     {
         
         offset = 0.5f;
-        //Invoke("Destruct", lifeTime);
+        Invoke("Destruct", lifeTime);
     }
 
     void Update()
     {
-          Destruct();
+          //Destruct();
     }
 
     void OnTriggerEnter2D(Collider2D coll)
