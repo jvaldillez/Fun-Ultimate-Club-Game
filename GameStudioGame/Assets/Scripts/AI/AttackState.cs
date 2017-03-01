@@ -19,6 +19,9 @@ public class AttackState : IEnemyState
     {
         Look();
         Swing();
+
+        var diff = Mathf.Sign(enemy.chaseTarget.position.x - enemy.transform.position.x);
+        enemy.Flip(diff); // stand still and turn if needed
     }
 
     public void FixedUpdateState()
@@ -51,7 +54,9 @@ public class AttackState : IEnemyState
         {
             ToChaseState();
         }
-    }   
+        
+    }
+      
 
     private void Swing()
     {
@@ -73,5 +78,14 @@ public class AttackState : IEnemyState
     public void OnCollisionEnter2D(Collision2D coll)
     {
        
+    }
+
+    public void ToAlertState()
+    {
+        throw new NotImplementedException();
+    }
+    public void OnDrawGizmos()
+    {
+
     }
 }
