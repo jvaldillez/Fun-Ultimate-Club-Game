@@ -27,6 +27,7 @@ public class Enemy : CharacterTemplate {
     [HideInInspector] public AttackState attackState;
     [HideInInspector] public DeadState deadState;
     [HideInInspector] public AlertState alertState;
+    [HideInInspector] public KOState koState;
     [HideInInspector] public IEnemyState currentState;
     [HideInInspector] public Transform chaseTarget;
 
@@ -65,6 +66,7 @@ public class Enemy : CharacterTemplate {
         attackState = new AttackState(this);
         deadState = new DeadState(this);
         alertState = new AlertState(this);
+        koState = new KOState(this);
 
         chaseTarget = FindObjectOfType<PlayerController>().transform;
     }
@@ -93,6 +95,7 @@ public class Enemy : CharacterTemplate {
     // idle
     public void DoNothing()
     {
+        rb.velocity = new Vector2(0f, rb.velocity.y);
         animator.SetTrigger("enemyIdle");
 
     }    
@@ -105,14 +108,21 @@ public class Enemy : CharacterTemplate {
         animator.SetTrigger("enemyAttack");
     }
 
+    // called on death
     public void DestroyRb()
     {
         Destroy(rb);
+        Destroy(GetComponent<BoxCollider2D>());
     }
 
     void OnCollisionEnter2D(Collision2D coll)
     {
         currentState.OnCollisionEnter2D(coll);
+    }
+
+    void OnTriggerEnter2D(Collider2D coll)
+    {
+        currentState.OnTriggerEnter2D(coll);
     }
 
     void OnDrawGizmos()

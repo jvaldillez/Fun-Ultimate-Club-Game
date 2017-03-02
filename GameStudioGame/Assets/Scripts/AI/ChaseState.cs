@@ -7,11 +7,12 @@ public class ChaseState : IEnemyState
 {
 
     private readonly Enemy enemy;
+    private float lineOfSight;
 
-
-    public ChaseState(Enemy Enemy)
+    public ChaseState(Enemy e)
     {
-        enemy = Enemy;
+        enemy = e;
+        lineOfSight = enemy.distanceThreshold * 2f;
     }
 
     public void UpdateState()
@@ -49,11 +50,11 @@ public class ChaseState : IEnemyState
         
         var distance = Vector2.Distance(enemy.chaseTarget.position, enemy.transform.position);
         var direcOfPlayer = Vector3.Normalize(enemy.chaseTarget.position - enemy.transform.position);
-        var hit = Physics2D.Raycast(enemy.transform.position, direcOfPlayer, enemy.distanceThreshold, 3 << 8);
+        var hit = Physics2D.Raycast(enemy.transform.position, direcOfPlayer, lineOfSight, 3 << 8);
         
         // see raycast
         Debug.DrawRay(enemy.transform.position,
-                           direcOfPlayer * enemy.distanceThreshold,
+                           direcOfPlayer * lineOfSight,
                                 Color.red);
 
         if (!hit || hit.collider.tag != "Player")
@@ -97,5 +98,15 @@ public class ChaseState : IEnemyState
     public void OnDrawGizmos()
     {
 
+    }
+
+    public void OnTriggerEnter2D(Collider2D coll)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ToKOState()
+    {
+        throw new NotImplementedException();
     }
 }

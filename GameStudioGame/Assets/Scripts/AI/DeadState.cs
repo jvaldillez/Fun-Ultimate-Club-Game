@@ -47,7 +47,7 @@ public class DeadState : IEnemyState
         if (coll.gameObject.tag == "Ground")
         {
             enemy.DestroyRb();
-            enemy.GetComponent<BoxCollider2D>().isTrigger = true;
+            
             
         }
     }
@@ -59,5 +59,14 @@ public class DeadState : IEnemyState
     public void OnDrawGizmos()
     {
 
+    }
+
+    public void OnTriggerEnter2D(Collider2D coll)
+    {
+        throw new NotImplementedException();
+    }
+    public void ToKOState()
+    {
+        throw new NotImplementedException();
     }
 }

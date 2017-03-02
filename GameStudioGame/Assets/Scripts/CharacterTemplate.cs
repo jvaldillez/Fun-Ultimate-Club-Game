@@ -15,7 +15,7 @@ public abstract class CharacterTemplate : MonoBehaviour
     private bool mobile;
 
     //animator triggers    
-    protected string running,
+    public string running,
         jumping,
         throwing,
         idling,
