@@ -50,6 +50,10 @@ public class PlayerController : CharacterTemplate {
     //public Text healthText;
     public Text gameOverText;
 
+    public Text wCooldown;
+    public Text eCooldown;
+    public Text rCooldown;
+
     //Health slider
     public Slider healthBar;
     
@@ -94,6 +98,7 @@ public class PlayerController : CharacterTemplate {
         if (!gameOver)
         {
             setHealthBar();
+            setCooldownTimers();
             if (Health < 0f && !playerDead)
             {
                 //Destroy(gameObject);
@@ -153,24 +158,24 @@ public class PlayerController : CharacterTemplate {
                     CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing);
                 }
 
-                // dash
-                if (Input.GetButtonDown("Dash") && dashUnlocked)
-                {
-                    dash = true;
-                    animator.SetTrigger(running);
-                }
+                //// dash
+                //if (Input.GetButtonDown("Dash") && dashUnlocked)
+                //{
+                //    dash = true;
+                //    animator.SetTrigger(running);
+                //}
 
-                // silence
-                if (Input.GetButtonDown("Silence"))
-                {
-                    CastSpell(SilenceAlert, ref silenceTimer, silenceCoolDown, silenceUnlocked, throwing);
-                }
+                //// silence
+                //if (Input.GetButtonDown("Silence"))
+                //{
+                //    CastSpell(SilenceAlert, ref silenceTimer, silenceCoolDown, silenceUnlocked, throwing);
+                //}
 
-                // choke hold
-                if (Input.GetButtonDown("ChokeHold"))
-                {
-                    CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing);
-                }
+                //// choke hold
+                //if (Input.GetButtonDown("ChokeHold"))
+                //{
+                //    CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing);
+                //}
                 
             }
         }
@@ -297,14 +302,106 @@ public class PlayerController : CharacterTemplate {
             Health = sum;
     }
 
+    public void setCooldownTimers()
+    {
+        if (rangedUnlocked)
+        {
+            wCooldown.text = "Ranged Cooldown\n" + getRangedCd().ToString() + "sec";
+        }
+        else if (dashUnlocked)
+        {
+            wCooldown.text = "Dash\nCooldown\n" + getDashCd().ToString() + "sec";
+        }
+
+        if (siphonUnlocked)
+        {
+            eCooldown.text = "Siphon\nCooldown\n" + getSiphonCd().ToString() + "sec";
+        }
+        else if (silenceUnlocked)
+        {
+            eCooldown.text = "Silence\nCooldown\n" + getSilenceCd().ToString() + "sec";
+        }
+
+        if (zombieHandsUnlocked)
+        {
+            rCooldown.text = "Zombie Hands\nCooldown\n" + getHandsCd().ToString() + "sec";
+        }
+        else if(chokeHoldUnlocked)
+        {
+            rCooldown.text = "Choke Hold\nCooldown\n" + getChokeCd().ToString() + "sec";
+        }
+    }
+
+
     public void setSoulText(int count)
     {
-        soulText.text = "Souls Collected:" + count.ToString();
+        soulText.text =  count.ToString();
     }
 
     public void setHealthBar()
     {
         healthBar.value = Health;
     }
+
+    public float getRangedCd()
+    {
+        if (projectileTimer - Time.time > 0)
+        {
+            return projectileTimer - Time.time;
+        }
+        else
+            return 0;
+    }
+
+    public float getDashCd()
+    {
+        if (dashTimer - Time.time > 0)
+        {
+            return dashTimer - Time.time;
+        }
+        else
+            return 0;
+    }
+
+    public float getSiphonCd()
+    {
+        if (siphonTimer - Time.time > 0)
+        {
+            return siphonTimer - Time.time;
+        }
+        else
+            return 0;
+    }
+
+    public float getSilenceCd()
+    {
+        if (silenceTimer - Time.time > 0)
+        {
+            return silenceTimer - Time.time;
+        }
+        else
+            return 0;
+    }
+
+    public float getHandsCd()
+    {
+        if (handTimer - Time.time > 0)
+        {
+            return handTimer - Time.time;
+        }
+        else
+            return 0;
+    }
+
+    public float getChokeCd()
+    {
+        if (chokeHoldTimer - Time.time > 0)
+        {
+            return chokeHoldTimer - Time.time;
+        }
+        else
+            return 0;
+    }
+
 
 }
