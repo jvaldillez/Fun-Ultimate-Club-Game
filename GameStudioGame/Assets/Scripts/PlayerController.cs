@@ -12,9 +12,9 @@ public class PlayerController : CharacterTemplate {
     //private Transform groundCheck;          // A position marking where to check if the player is grounded.
     private bool grounded = false;			// Whether or not the player is grounded.
     private bool dashDone = false;          // Whether or not the player has done one dash
-    private bool onWall = false;
+    
 
-    public float wallJumpSpeed;
+    
     // spell prefabs
     public GameObject Projectile;           
     public GameObject siphon;
@@ -109,16 +109,12 @@ public class PlayerController : CharacterTemplate {
                 //grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
 
                 // If the jump button is pressed and the player is grounded then the player should jump.
-                if (Input.GetButtonDown("Jump") && grounded && !onWall)
+                if (Input.GetButtonDown("Jump") && (grounded || wallState != WallStatuses.OffWall))
                 {
                     jump = true;
                     animator.SetTrigger(jumping);
                 }
-                else if (Input.GetButtonDown("Jump") && onWall)
-                {
-                    jump = true;
-                    animator.SetTrigger(jumping);
-                }
+               
                 // melee
                 if (Input.GetButtonDown("Melee"))
                 {
@@ -193,15 +189,15 @@ public class PlayerController : CharacterTemplate {
             {
                 float h = Input.GetAxisRaw("Horizontal");
                 Move(h);
-                if (jump && !onWall)
+                if (jump && wallState == WallStatuses.OffWall)
                 {
                     Jump();
                     jump = false;
                     grounded = false;
                 }
-                else if(jump && onWall)
+                else if(jump && wallState != WallStatuses.OffWall)
                 {
-                    WallJump();
+                    Jump();
                     jump = false;
                 }
 
@@ -239,10 +235,7 @@ public class PlayerController : CharacterTemplate {
         
     }
 
-    void WallJump()
-    {
-        rb.velocity = new Vector2(rb.velocity.x, wallJumpSpeed);
-    }
+    
 
     /*
     void CastZombieHands(GameObject prefab)
@@ -255,7 +248,7 @@ public class PlayerController : CharacterTemplate {
     }
     */
     // Handle Collisions
-    void OnCollisionEnter2D(Collision2D coll)
+    public override void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll.gameObject.tag == "Ground" || coll.gameObject.tag == "Enemy")
         {
@@ -270,21 +263,9 @@ public class PlayerController : CharacterTemplate {
             soulCount++;
             setSoulText(soulCount);
         }
-
-        if (coll.gameObject.tag == "Wall")
-        {
-            onWall = true;
-        }
-
-    }
-
-    void OnCollisionExit2D(Collision2D coll)
-    {
-        if (coll.gameObject.tag == "Wall")
-        {
-            onWall = false;
-        }
-    }
+        
+        base.OnCollisionEnter2D(coll);
+    }  
 
     // Continuous Collisions
     void OnCollisionStay2D(Collision2D coll)

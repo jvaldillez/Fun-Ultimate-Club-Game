@@ -14,6 +14,11 @@ public abstract class CharacterTemplate : MonoBehaviour
     private float health;  
     private bool mobile;
 
+    // god i love enums
+    public enum WallStatuses { OffWall, WallOnLeft, WallOnRight};
+    protected WallStatuses wallState = WallStatuses.OffWall;
+
+
     //animator triggers    
     public string running,
         jumping,
@@ -98,8 +103,13 @@ public abstract class CharacterTemplate : MonoBehaviour
         Flip(input);
         if (mobile)
         {
-            // add velocity
-            rb.velocity = new Vector2(input * movementSpeed, rb.velocity.y);
+            if(!((transform.right.x > 0f && wallState == WallStatuses.WallOnRight)
+                || (transform.right.x < 0f && wallState == WallStatuses.WallOnLeft)))
+            {
+                // add velocity
+                rb.velocity = new Vector2(input * movementSpeed, rb.velocity.y);
+            }
+            
             
             //animate
             if (input != 0f)
@@ -151,7 +161,22 @@ public abstract class CharacterTemplate : MonoBehaviour
         //rb.AddForce(new Vector2(dashSpeed, 0f));
     }
 
+    public virtual void OnCollisionEnter2D(Collision2D coll)
+    {
+        if(coll.gameObject.tag == "Wall")
+        {
+            wallState = (transform.position.x - coll.transform.position.x) > 0f ? WallStatuses.WallOnLeft : WallStatuses.WallOnRight;
+        }
+    }
 
+    public virtual void OnCollisionExit2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag == "Wall")
+        {
+            wallState = WallStatuses.OffWall;
+        }
+
+    }
 
     public virtual void Destruct()
     {
