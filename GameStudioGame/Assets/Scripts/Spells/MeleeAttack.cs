@@ -26,4 +26,9 @@ public class MeleeAttack: Ability
 
         }
     }
+    public override void Init(CharacterTemplate chr)
+    {
+        transform.parent = chr.transform;
+        base.Init(chr);
+    }
 }

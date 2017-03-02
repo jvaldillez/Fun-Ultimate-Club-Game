@@ -9,10 +9,12 @@ public class AttackState : IEnemyState
     private readonly Enemy enemy;
 
     private float coolDownTimer;
+   
 
     public AttackState(Enemy Enemy)
     {
         enemy = Enemy;
+
     }
 
     public void UpdateState()
@@ -87,5 +89,15 @@ public class AttackState : IEnemyState
     public void OnDrawGizmos()
     {
 
+    }
+
+    public void OnTriggerEnter2D(Collider2D coll)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ToKOState()
+    {
+        throw new NotImplementedException();
     }
 }

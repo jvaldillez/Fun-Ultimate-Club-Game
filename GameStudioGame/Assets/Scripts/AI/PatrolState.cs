@@ -7,6 +7,8 @@ public class PatrolState : IEnemyState
 {
     private readonly Enemy enemy;
     private const float closeEnoughThreshold = 0.5f;
+    private const float patrolTurnTime = 1.5f;
+    private float timer;
 
     public PatrolState(Enemy e)
     {
@@ -17,7 +19,7 @@ public class PatrolState : IEnemyState
     {
         Look();
         Patrol();
-        Listen();        
+        //Listen();        
     }
 
     public void FixedUpdateState()
@@ -33,11 +35,12 @@ public class PatrolState : IEnemyState
     public void ToChaseState()
     {
         enemy.currentState = enemy.chaseState;
+        timer = 0f;
     }
 
     public void ToAttackState()
     {
-
+        timer = 0f;
     }
 
     private void Look()
@@ -62,10 +65,27 @@ public class PatrolState : IEnemyState
     void Patrol()
     {
         var curWay = enemy.waypoints[enemy.currentWaypoint];
-        var diff = Mathf.Sign(curWay.x - enemy.transform.position.x);
-        enemy.Move(diff);
-        if (Mathf.Abs(curWay.x - enemy.transform.position.x)< closeEnoughThreshold)
-            enemy.currentWaypoint = enemy.currentWaypoint == 1 ? 0 : 1;
+
+        // once enemy reaches waypoint, pause for patrolTurnTime seconds before turning around
+        if (Mathf.Abs(curWay.x - enemy.transform.position.x) < closeEnoughThreshold)
+        {
+            enemy.DoNothing();
+            timer += Time.deltaTime;
+            if(timer > patrolTurnTime)
+            {
+                enemy.currentWaypoint = enemy.currentWaypoint == 1 ? 0 : 1;
+                timer = 0f;
+            }
+               
+        }            
+        else
+        {
+            var diff = Mathf.Sign(curWay.x - enemy.transform.position.x);
+            enemy.Move(diff);
+        }
+        
+       
+        
     }
 
     void Listen()
@@ -75,7 +95,7 @@ public class PatrolState : IEnemyState
         {
             ToAlertState();
         }
-    }
+    }    
 
     public void ToDeadState()
     {
@@ -85,15 +105,12 @@ public class PatrolState : IEnemyState
     public void OnCollisionEnter2D(Collision2D coll)
     {
 
-        // this doesnt work
-        if (coll.gameObject.tag == "Player")
-        {
-            ToAlertState();
-        }
+        
     }   
 
     public void ToAlertState()
     {
+        timer = 0f;
         enemy.currentState = enemy.alertState;
     }
 
@@ -106,7 +123,19 @@ public class PatrolState : IEnemyState
         }
 
         Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(enemy.transform.position, enemy.hearingRadius);
+        //Gizmos.DrawWireSphere(enemy.transform.position, enemy.hearingRadius);
     }
 
+    public void OnTriggerEnter2D(Collider2D coll)
+    {
+        if (coll.tag == "Spell")
+        {
+            ToAlertState();
+        }
+    }
+    public void ToKOState()
+    {
+        enemy.animator.SetTrigger(enemy.dead);
+        enemy.currentState = enemy.koState;
+    }
 }

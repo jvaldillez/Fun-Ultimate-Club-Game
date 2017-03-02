@@ -8,8 +8,6 @@ public interface IEnemyState
 
     void FixedUpdateState();
 
-    //void OnTriggerEnter(Collider other);
-
     void ToPatrolState();
 
     void ToAlertState();
@@ -23,4 +21,9 @@ public interface IEnemyState
     void OnCollisionEnter2D(Collision2D coll);
 
     void OnDrawGizmos();
+
+    void OnTriggerEnter2D(Collider2D coll);
+
+    void ToKOState();
+
 }

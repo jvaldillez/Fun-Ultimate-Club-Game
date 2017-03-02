@@ -7,12 +7,14 @@ public class AlertState : IEnemyState {
 
     private readonly Enemy enemy;
     
-    private float timeAlert = 4f;
+    private float timeAlert = 3f;
     private float timer;
+    private float lineOfSight;
 
     public AlertState(Enemy e)
     {
         enemy = e;
+        lineOfSight = enemy.distanceThreshold * 2f;
     }
 
     public void FixedUpdateState()
@@ -72,10 +74,10 @@ public class AlertState : IEnemyState {
 
         var hit = Physics2D.Raycast(enemy.transform.position,
             dir,
-            enemy.distanceThreshold,
+            lineOfSight,
             3 << 8);
         Debug.DrawRay(enemy.transform.position,
-            dir * enemy.distanceThreshold,
+            dir * lineOfSight,
             Color.magenta);
 
         if (hit && hit.collider.tag == "Player")
@@ -86,5 +88,15 @@ public class AlertState : IEnemyState {
     public void OnDrawGizmos()
     {
 
+    }
+
+    public void OnTriggerEnter2D(Collider2D coll)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ToKOState()
+    {
+        throw new NotImplementedException();
     }
 }

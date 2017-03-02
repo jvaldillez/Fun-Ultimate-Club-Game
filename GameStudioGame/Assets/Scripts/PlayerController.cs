@@ -157,25 +157,25 @@ public class PlayerController : CharacterTemplate {
                     CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing);
                 }
 
-                //    // dash
-                //    if (Input.GetButtonDown("Dash") && dashUnlocked)
-                //    {
-                //        dash = true;
-                //        animator.SetTrigger(running);
-                //    }
+                // dash
+                if (Input.GetButtonDown("Dash") && dashUnlocked)
+                {
+                    dash = true;
+                    animator.SetTrigger(running);
+                }
 
-                //    // silence
-                //    if (Input.GetButtonDown("Silence"))
-                //    {
-                //        CastSpell(SilenceAlert, ref silenceTimer, silenceCoolDown, silenceUnlocked, throwing);
-                //    }
+                // silence
+                if (Input.GetButtonDown("Silence"))
+                {
+                    CastSpell(SilenceAlert, ref silenceTimer, silenceCoolDown, silenceUnlocked, throwing);
+                }
 
-                //    // choke hold
-                //    if (Input.GetButtonDown("ChokeHold"))
-                //    {
-                //        CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing);
-                //    }
-                //}
+                // choke hold
+                if (Input.GetButtonDown("ChokeHold"))
+                {
+                    CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing);
+                }
+                
             }
         }
         else if (!playerDead)
