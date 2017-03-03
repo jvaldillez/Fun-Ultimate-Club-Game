@@ -48,11 +48,13 @@ public class PlayerController : CharacterTemplate {
     // UI text
     public Text soulText;
     //public Text healthText;
-    public Text gameOverText;
+    public Text gameOverText; 
 
-    public Text wCooldown;
-    public Text eCooldown;
-    public Text rCooldown;
+    // test icon
+    public CoolDownTimer Qicon;
+    public CoolDownTimer Wicon;
+    public CoolDownTimer Eicon;
+    public CoolDownTimer Ricon;
 
     //Health slider
     public Slider healthBar;
@@ -98,7 +100,7 @@ public class PlayerController : CharacterTemplate {
         if (!gameOver)
         {
             setHealthBar();
-            setCooldownTimers();
+            
             if (Health < 0f && !playerDead)
             {
                 //Destroy(gameObject);
@@ -123,13 +125,14 @@ public class PlayerController : CharacterTemplate {
                 // melee
                 if (Input.GetButtonDown("Melee"))
                 {
-                    CastSpell(MeleeAttack, ref meleeTimer, meleeCoolDown, true, meleeing);
+                    CastSpell(MeleeAttack, ref meleeTimer, meleeCoolDown, true, meleeing, Qicon);
+                    
                 }
 
                 // projectile
                 if (Input.GetButtonDown("Fire1") && rangedUnlocked)
                 {
-                    CastSpell(Projectile, ref projectileTimer, projectileCoolDown, rangedUnlocked, throwing);
+                    CastSpell(Projectile, ref projectileTimer, projectileCoolDown, rangedUnlocked, throwing, Wicon);
                 }
                 else if (Input.GetButtonDown("Fire1") && dashUnlocked && Time.time >= dashTimer)
                 {
@@ -141,21 +144,21 @@ public class PlayerController : CharacterTemplate {
                 // siphon
                 if (Input.GetButtonDown("Fire2") && grounded && siphonUnlocked)
                 {
-                    CastSpell(siphon, ref siphonTimer, siphonCoolDown, siphonUnlocked, idling);
+                    CastSpell(siphon, ref siphonTimer, siphonCoolDown, siphonUnlocked, idling, Eicon);
                 }
                 else if (Input.GetButtonDown("Fire2") && silenceUnlocked)
                 {
-                    CastSpell(SilenceAlert, ref silenceTimer, silenceCoolDown, silenceUnlocked, throwing);
+                    CastSpell(SilenceAlert, ref silenceTimer, silenceCoolDown, silenceUnlocked, throwing, Eicon);
                 }
 
                 // hand
                 if (Input.GetButtonDown("Fire3") && zombieHandsUnlocked)
                 {
-                    CastSpell(ZombieHands, ref handTimer, handCoolDown, zombieHandsUnlocked, throwing);
+                    CastSpell(ZombieHands, ref handTimer, handCoolDown, zombieHandsUnlocked, throwing, Ricon);
                 }
                 else if (Input.GetButtonDown("Fire3") && chokeHoldUnlocked)
                 {
-                    CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing);
+                    CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing, Ricon);
                 }
 
                 //// dash
@@ -226,7 +229,7 @@ public class PlayerController : CharacterTemplate {
     
     
     
-    void CastSpell(GameObject prefab, ref float timer, float cooldown, bool unlocked, string trigger)
+    void CastSpell(GameObject prefab, ref float timer, float cooldown, bool unlocked, string trigger, CoolDownTimer icon)
     {
         if(Time.time > timer && unlocked)
         {
@@ -236,6 +239,7 @@ public class PlayerController : CharacterTemplate {
             spell.Init(this);
 
             animator.SetTrigger(trigger);
+            icon.Spin(cooldown);
         }
         
     }
@@ -302,41 +306,7 @@ public class PlayerController : CharacterTemplate {
             Health = sum;
     }
 
-    public void setCooldownTimers()
-    {
-        if (rangedUnlocked)
-        {
-            wCooldown.text = "Ranged Cooldown\n" + getCD(projectileTimer).ToString() + "sec";
-        }
-        else if (dashUnlocked)
-        {
-            wCooldown.text = "Dash\nCooldown\n" + getCD(dashTimer).ToString() + "sec";
-        }
-
-        if (siphonUnlocked)
-        {
-            eCooldown.text = "Siphon\nCooldown\n" + getCD(siphonTimer).ToString() + "sec";
-        }
-        else if (silenceUnlocked)
-        {
-            eCooldown.text = "Silence\nCooldo   wn\n" + getCD(silenceTimer).ToString() + "sec";
-        }
-
-        if (zombieHandsUnlocked)
-        {
-            rCooldown.text = "Zombie Hands\nCooldown\n" + getCD(handTimer).ToString() + "sec";
-        }
-        else if(chokeHoldUnlocked)
-        {
-            rCooldown.text = "Choke Hold\nCooldown\n" + getCD(chokeHoldTimer).ToString() + "sec";
-        }
-    }
-
-    public void SetCoolDownTimers()
-    {
-        
-    }
-
+   
 
     public void setSoulText(int count)
     {
@@ -349,9 +319,9 @@ public class PlayerController : CharacterTemplate {
     }
         
     // :)
-    int getCD(float timer)
+    float getCD(float timer)
     {
-        var hello = timer - Time.time;
-        return hello > 0f ? (int)Mathf.Ceil(hello) : 0; 
+        var timeRemaining = timer - Time.time;
+        return timeRemaining > 0f ? Mathf.Ceil(timeRemaining) : 0; 
     }
 }
