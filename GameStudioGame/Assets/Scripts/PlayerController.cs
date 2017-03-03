@@ -306,30 +306,35 @@ public class PlayerController : CharacterTemplate {
     {
         if (rangedUnlocked)
         {
-            wCooldown.text = "Ranged Cooldown\n" + getRangedCd().ToString() + "sec";
+            wCooldown.text = "Ranged Cooldown\n" + getCD(projectileTimer).ToString() + "sec";
         }
         else if (dashUnlocked)
         {
-            wCooldown.text = "Dash\nCooldown\n" + getDashCd().ToString() + "sec";
+            wCooldown.text = "Dash\nCooldown\n" + getCD(dashTimer).ToString() + "sec";
         }
 
         if (siphonUnlocked)
         {
-            eCooldown.text = "Siphon\nCooldown\n" + getSiphonCd().ToString() + "sec";
+            eCooldown.text = "Siphon\nCooldown\n" + getCD(siphonTimer).ToString() + "sec";
         }
         else if (silenceUnlocked)
         {
-            eCooldown.text = "Silence\nCooldown\n" + getSilenceCd().ToString() + "sec";
+            eCooldown.text = "Silence\nCooldo   wn\n" + getCD(silenceTimer).ToString() + "sec";
         }
 
         if (zombieHandsUnlocked)
         {
-            rCooldown.text = "Zombie Hands\nCooldown\n" + getHandsCd().ToString() + "sec";
+            rCooldown.text = "Zombie Hands\nCooldown\n" + getCD(handTimer).ToString() + "sec";
         }
         else if(chokeHoldUnlocked)
         {
-            rCooldown.text = "Choke Hold\nCooldown\n" + getChokeCd().ToString() + "sec";
+            rCooldown.text = "Choke Hold\nCooldown\n" + getCD(chokeHoldTimer).ToString() + "sec";
         }
+    }
+
+    public void SetCoolDownTimers()
+    {
+        
     }
 
 
@@ -342,66 +347,11 @@ public class PlayerController : CharacterTemplate {
     {
         healthBar.value = Health;
     }
-
-    public float getRangedCd()
+        
+    // :)
+    int getCD(float timer)
     {
-        if (projectileTimer - Time.time > 0)
-        {
-            return projectileTimer - Time.time;
-        }
-        else
-            return 0;
+        var hello = timer - Time.time;
+        return hello > 0f ? (int)Mathf.Ceil(hello) : 0; 
     }
-
-    public float getDashCd()
-    {
-        if (dashTimer - Time.time > 0)
-        {
-            return dashTimer - Time.time;
-        }
-        else
-            return 0;
-    }
-
-    public float getSiphonCd()
-    {
-        if (siphonTimer - Time.time > 0)
-        {
-            return siphonTimer - Time.time;
-        }
-        else
-            return 0;
-    }
-
-    public float getSilenceCd()
-    {
-        if (silenceTimer - Time.time > 0)
-        {
-            return silenceTimer - Time.time;
-        }
-        else
-            return 0;
-    }
-
-    public float getHandsCd()
-    {
-        if (handTimer - Time.time > 0)
-        {
-            return handTimer - Time.time;
-        }
-        else
-            return 0;
-    }
-
-    public float getChokeCd()
-    {
-        if (chokeHoldTimer - Time.time > 0)
-        {
-            return chokeHoldTimer - Time.time;
-        }
-        else
-            return 0;
-    }
-
-
 }

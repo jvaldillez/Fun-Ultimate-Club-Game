@@ -53,7 +53,7 @@ public class KOState : IEnemyState
 
     public void ToDeadState()
     {
-        throw new NotImplementedException();
+        enemy.currentState = enemy.deadState;
     }
 
     public void ToKOState()

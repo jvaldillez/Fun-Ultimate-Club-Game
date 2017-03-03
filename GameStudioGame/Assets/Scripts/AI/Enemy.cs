@@ -77,6 +77,7 @@ public class Enemy : CharacterTemplate {
         if (Health <= 0f && !enemyDead)
         {
             currentState.ToDeadState();
+            DestroyRb();
             Instantiate(soul, transform.position, Quaternion.identity);
             
             animator.SetTrigger("enemyDead");

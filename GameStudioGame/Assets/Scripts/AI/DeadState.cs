@@ -44,12 +44,7 @@ public class DeadState : IEnemyState
 
     public void OnCollisionEnter2D(Collision2D coll)
     {
-        if (coll.gameObject.tag == "Ground")
-        {
-            enemy.DestroyRb();
-            
-            
-        }
+        
     }
 
     public void ToAlertState()
