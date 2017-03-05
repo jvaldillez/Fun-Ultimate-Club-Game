@@ -15,7 +15,7 @@ public abstract class CharacterTemplate : MonoBehaviour
     private bool mobile;
 
     // god i love enums
-    public enum WallStatuses { OffWall, WallOnLeft, WallOnRight};
+    public enum WallStatuses { OffWall, WallOnLeft, WallOnRight, WallBelow };
     protected WallStatuses wallState = WallStatuses.OffWall;
 
 
@@ -165,6 +165,7 @@ public abstract class CharacterTemplate : MonoBehaviour
     {
         if(coll.gameObject.tag == "Wall")
         {
+            
             wallState = (transform.position.x - coll.transform.position.x) > 0f ? WallStatuses.WallOnLeft : WallStatuses.WallOnRight;
         }
     }

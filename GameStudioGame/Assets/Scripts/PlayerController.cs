@@ -136,6 +136,7 @@ public class PlayerController : CharacterTemplate {
                 }
                 else if (Input.GetButtonDown("Fire1") && dashUnlocked && Time.time >= dashTimer)
                 {
+                    Wicon.Spin(dashCoolDown);
                     dash = true;
                     animator.SetTrigger(running);
                     dashTimer = Time.time + dashCoolDown;
@@ -179,6 +180,17 @@ public class PlayerController : CharacterTemplate {
                 //{
                 //    CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing);
                 //}
+
+                var hit = Physics2D.Raycast(transform.position, -transform.up, 1f, 1 << LayerMask.NameToLayer("Ground"));
+                Debug.DrawRay(transform.position, -transform.up, Color.green);
+
+                if((wallState != WallStatuses.OffWall ) && 
+                    hit && 
+                    hit.collider.tag == "Wall")
+                {
+                    grounded = true;
+                    wallState = WallStatuses.OffWall;
+                }
                 
             }
         }
