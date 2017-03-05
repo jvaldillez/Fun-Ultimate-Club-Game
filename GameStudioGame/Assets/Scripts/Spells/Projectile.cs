@@ -23,10 +23,6 @@ public class Projectile : Ability
             coll.GetComponent<Enemy>().ApplyDamage(damage, transform.position, recoilForce);
         }
     }
-    public override void Init(CharacterTemplate chr)
-    {
-        transform.parent = chr.transform;
-        base.Init(chr);
-    }
+    
 }
 
