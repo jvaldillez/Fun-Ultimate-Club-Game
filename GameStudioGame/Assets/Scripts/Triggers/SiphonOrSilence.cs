@@ -12,35 +12,35 @@ public class SiphonOrSilence : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && !player.silenceUnlocked && !player.siphonUnlocked)
+        if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && !PlayerController.silenceUnlocked && !PlayerController.siphonUnlocked)
         {
-            player.siphonUnlocked = true;
+            PlayerController.siphonUnlocked = true;
             activated = true;
             SiphonOrSilenceText.text = "Siphon unlocked. Press E to use and drain health from enemies. \n To switch out siphon for silence press Z.";
         }
-        else if (Input.GetKeyDown(KeyCode.X) && playerInTrigger && !player.silenceUnlocked && !player.siphonUnlocked)
+        else if (Input.GetKeyDown(KeyCode.X) && playerInTrigger && !PlayerController.silenceUnlocked && !PlayerController.siphonUnlocked)
         {
-            player.silenceUnlocked = true;
+            PlayerController.silenceUnlocked = true;
             activated = true;
             SiphonOrSilenceText.text = "Silence unlocked. Press E to use and become undetectable. \n To switch out silence for siphon press Z.";
         }
-        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && player.silenceUnlocked)
+        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && PlayerController.silenceUnlocked)
         {
-            player.silenceUnlocked = false;
-            player.siphonUnlocked = true;
+            PlayerController.silenceUnlocked = false;
+            PlayerController.siphonUnlocked = true;
             SiphonOrSilenceText.text = "Siphon unlocked. Press E to use and drain health from enemies. \n To switch out siphon for silence press Z.";
         }
-        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && player.siphonUnlocked)
+        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && PlayerController.siphonUnlocked)
         {
-            player.siphonUnlocked = false;
-            player.silenceUnlocked = true;
+            PlayerController.siphonUnlocked = false;
+            PlayerController.silenceUnlocked = true;
             SiphonOrSilenceText.text = "Silence unlocked. Press E to use and become undetectable. \n To switch out silence for siphon press Z.";
         }
-        else if (playerInTrigger && player.siphonUnlocked)
+        else if (playerInTrigger && PlayerController.siphonUnlocked)
         {
             SiphonOrSilenceText.text = "Siphon unlocked. Press E to use and drain health from enemies. \n To switch out siphon for silence press Z.";
         }
-        else if (playerInTrigger && player.silenceUnlocked)
+        else if (playerInTrigger && PlayerController.silenceUnlocked)
         {
             SiphonOrSilenceText.text = "Silence unlocked. Press E to use and become undetectable. \n To switch out silence for siphon press Z.";
         }
