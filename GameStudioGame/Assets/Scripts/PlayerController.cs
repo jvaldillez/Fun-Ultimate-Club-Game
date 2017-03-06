@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : CharacterTemplate {
         
     [HideInInspector]
     public bool jump = false;				// Condition for whether the player should jump. 
+    [HideInInspector]
     public bool dash = false;               // Condition for whether the player should dash.
     
     //private Transform groundCheck;          // A position marking where to check if the player is grounded.
     private bool grounded = false;			// Whether or not the player is grounded.
     private bool dashDone = false;          // Whether or not the player has done one dash
-    
 
-    
+
+    private float bottomOfWorld = 0f;
     // spell prefabs
     public GameObject Projectile;           
     public GameObject siphon;
@@ -99,6 +101,11 @@ public class PlayerController : CharacterTemplate {
     {        
         if (!gameOver)
         {
+            if (transform.position.y < bottomOfWorld)
+            {
+                gameOver = true;
+                gameOverText.text = "Game Over\n Press Space to retry level";
+            }
             setHealthBar();
             
             if (Health < 0f && !playerDead)
@@ -107,7 +114,7 @@ public class PlayerController : CharacterTemplate {
                 animator.SetTrigger("playerDead");
                 playerDead = true;
                 gameOver = true;
-                gameOverText.text = "Game Over";
+                gameOverText.text = "Game Over\n Press Space to retry level";
             }
 
             if (Mobile)
@@ -192,6 +199,13 @@ public class PlayerController : CharacterTemplate {
                     wallState = WallStatuses.OffWall;
                 }
                 
+            }
+        }
+        else if (gameOver)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
         else if (!playerDead)
