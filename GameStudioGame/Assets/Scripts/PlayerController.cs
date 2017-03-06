@@ -42,7 +42,7 @@ public class PlayerController : CharacterTemplate {
     private float dashTimer;
 
     //player stats
-    public int soulCount = 0;
+    public static int soulCount = 0;
     public bool playerDead = false;
 
     // UI text
