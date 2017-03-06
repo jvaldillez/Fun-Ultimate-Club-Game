@@ -12,35 +12,35 @@ public class RangedOrDashTrigger : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && !player.dashUnlocked && !player.rangedUnlocked)
+        if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && !PlayerController.dashUnlocked && !PlayerController.rangedUnlocked)
         {
-            player.rangedUnlocked = true;
+            PlayerController.rangedUnlocked = true;
             activated = true;
             RangedOrDashText.text = "Ranged attack unlocked. Press W to use. \n To switch out ranged for dash press Z.";
         }
-        else if (Input.GetKeyDown(KeyCode.X) && playerInTrigger && !player.dashUnlocked && !player.rangedUnlocked)
+        else if (Input.GetKeyDown(KeyCode.X) && playerInTrigger && !PlayerController.dashUnlocked && !PlayerController.rangedUnlocked)
         {
-            player.dashUnlocked = true;
+            PlayerController.dashUnlocked = true;
             activated = true;
             RangedOrDashText.text = "Dash unlocked. Press W to use. \n To switch out dash for ranged press Z.";
         }
-        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && player.dashUnlocked)
+        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && PlayerController.dashUnlocked)
         {
-            player.dashUnlocked = false;
-            player.rangedUnlocked = true;
+            PlayerController.dashUnlocked = false;
+            PlayerController.rangedUnlocked = true;
             RangedOrDashText.text = "Ranged attack unlocked. Press W to use. \n To switch out ranged for dash press Z.";
         }
-        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && player.rangedUnlocked)
+        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && PlayerController.rangedUnlocked)
         {
-            player.rangedUnlocked = false;
-            player.dashUnlocked = true;
+            PlayerController.rangedUnlocked = false;
+            PlayerController.dashUnlocked = true;
             RangedOrDashText.text = "Dash unlocked. Press W to use. \n To switch out dash for ranged press Z.";
         }
-        else if (playerInTrigger && player.rangedUnlocked)
+        else if (playerInTrigger && PlayerController.rangedUnlocked)
         {
             RangedOrDashText.text = "Ranged attack unlocked. Press W to use. \n To switch out ranged for dash press Z.";
         }
-        else if (playerInTrigger && player.dashUnlocked)
+        else if (playerInTrigger && PlayerController.dashUnlocked)
         {
             RangedOrDashText.text = "Dash unlocked. Press W to use. \n To switch out dash for ranged press Z.";
         }

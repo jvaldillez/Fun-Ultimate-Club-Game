@@ -62,12 +62,12 @@ public class PlayerController : CharacterTemplate {
 
     // triggers
     public bool gameOver = false;
-    public bool rangedUnlocked = false;
-    public bool siphonUnlocked = false;
-    public bool zombieHandsUnlocked = false;
-    public bool silenceUnlocked = false;
-    public bool chokeHoldUnlocked = false;
-    public bool dashUnlocked = false;
+    public static bool rangedUnlocked = false;
+    public static bool siphonUnlocked = false;
+    public static bool zombieHandsUnlocked = false;
+    public static bool silenceUnlocked = false;
+    public static bool chokeHoldUnlocked = false;
+    public static bool dashUnlocked = false;
 
  
 

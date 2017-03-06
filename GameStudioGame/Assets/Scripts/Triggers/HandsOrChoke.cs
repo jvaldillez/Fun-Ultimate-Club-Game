@@ -12,35 +12,35 @@ public class HandsOrChoke : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && !player.chokeHoldUnlocked && !player.zombieHandsUnlocked)
+        if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && !PlayerController.chokeHoldUnlocked && !PlayerController.zombieHandsUnlocked)
         {
-            player.zombieHandsUnlocked = true;
+            PlayerController.zombieHandsUnlocked = true;
             activated = true;
             HandsOrChokeText.text = "Zombie Hands unlocked. Press R to use place an AoE stun on the ground. \n To switch out Zombie Hands for Choke Hold press Z.";
         }
-        else if (Input.GetKeyDown(KeyCode.X) && playerInTrigger && !player.chokeHoldUnlocked && !player.zombieHandsUnlocked)
+        else if (Input.GetKeyDown(KeyCode.X) && playerInTrigger && !PlayerController.chokeHoldUnlocked && !PlayerController.zombieHandsUnlocked)
         {
-            player.chokeHoldUnlocked = true;
+            PlayerController.chokeHoldUnlocked = true;
             activated = true;
             HandsOrChokeText.text = "Choke Hold unlocked. Press R to use and incapacitate an enemy. \n To switch out Choke Hold for Zombie Hands press Z.";
         }
-        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && player.chokeHoldUnlocked)
+        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && PlayerController.chokeHoldUnlocked)
         {
-            player.chokeHoldUnlocked = false;
-            player.zombieHandsUnlocked = true;
+            PlayerController.chokeHoldUnlocked = false;
+            PlayerController.zombieHandsUnlocked = true;
             HandsOrChokeText.text = "Zombie Hands unlocked. Press R to use place an AoE stun on the ground. \n To switch out Zombie Hands for Choke Hold press Z.";
         }
-        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && player.zombieHandsUnlocked)
+        else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && PlayerController.zombieHandsUnlocked)
         {
-            player.zombieHandsUnlocked = false;
-            player.chokeHoldUnlocked = true;
+            PlayerController.zombieHandsUnlocked = false;
+            PlayerController.chokeHoldUnlocked = true;
             HandsOrChokeText.text = "Choke Hold unlocked. Press R to use and incapacitate an enemy. \n To switch out Choke Hold for Zombie Hands press Z.";
         }
-        else if (playerInTrigger && player.zombieHandsUnlocked)
+        else if (playerInTrigger && PlayerController.zombieHandsUnlocked)
         {
             HandsOrChokeText.text = "Zombie Hands unlocked. Press R to use place an AoE stun on the ground. \n To switch out Zombie Hands for Choke Hold press Z.";
         }
-        else if (playerInTrigger && player.chokeHoldUnlocked)
+        else if (playerInTrigger && PlayerController.chokeHoldUnlocked)
         {
             HandsOrChokeText.text = "Choke Hold unlocked. Press R to use and incapacitate an enemy. \n To switch out Choke Hold for Zombie Hands press Z.";
         }
