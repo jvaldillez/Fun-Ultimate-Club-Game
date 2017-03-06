@@ -73,6 +73,8 @@ public class Enemy : CharacterTemplate {
 	
 	void Update ()
     {
+        
+
         // handle death
         if (Health <= 0f && !enemyDead)
         {
@@ -116,9 +118,20 @@ public class Enemy : CharacterTemplate {
         Destroy(GetComponent<BoxCollider2D>());
     }
 
-    void OnCollisionEnter2D(Collision2D coll)
+    public override void OnCollisionEnter2D(Collision2D coll)
     {
+        base.OnCollisionEnter2D(coll);
         currentState.OnCollisionEnter2D(coll);
+    }
+
+    public bool CheckForGround()
+    {
+        var direc = -transform.up + transform.right;
+        Debug.DrawRay(transform.position, direc, Color.green);
+        var hit = Physics2D.Raycast(transform.position, direc, 1f, 1 << LayerMask.NameToLayer("Ground"));
+        return (hit &&
+            hit.collider.tag == "Ground");
+        
     }
 
     void OnTriggerEnter2D(Collider2D coll)

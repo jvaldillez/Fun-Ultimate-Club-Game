@@ -8,6 +8,7 @@ public class ChaseState : IEnemyState
 
     private readonly Enemy enemy;
     private float lineOfSight;
+    private float minTurnDist = 0.2f;
 
     public ChaseState(Enemy e)
     {
@@ -61,6 +62,10 @@ public class ChaseState : IEnemyState
         {
             ToAlertState();
         }
+        if (!enemy.CheckForGround())
+        {
+            ToAlertState();
+        }
         else if (distance < enemy.attackRadius)
         {
             ToAttackState();
@@ -72,10 +77,15 @@ public class ChaseState : IEnemyState
     {
         
             //move enemy towards player
-            var diff = Mathf.Sign(enemy.chaseTarget.position.x - enemy.transform.position.x);
-            enemy.Move(diff);
+        var diff = enemy.chaseTarget.position.x - enemy.transform.position.x;
+        // dont spin when player is above enemy
+        diff = Mathf.Abs(diff) < minTurnDist ? 0f : Mathf.Sign(diff);
+        enemy.Move(diff);
         
+         
         
+
+
     }
 
     public void ToDeadState()
