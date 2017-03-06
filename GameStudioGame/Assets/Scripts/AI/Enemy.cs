@@ -13,6 +13,7 @@ public class Enemy : CharacterTemplate {
     public float damage;
     public float recoilForce;                   // recoil player experiences when hit by enemy
     private bool enemyDead = false;
+    public bool idle = false;
 
     public GameObject meleeAttack;
     public float attackRadius = 1.5f;

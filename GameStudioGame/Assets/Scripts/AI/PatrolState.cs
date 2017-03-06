@@ -18,7 +18,10 @@ public class PatrolState : IEnemyState
     public void UpdateState()
     {
         Look();
-        Patrol();
+        if (!enemy.idle)
+        {
+            Patrol();
+        }
         //Listen();        
     }
 
@@ -57,7 +60,7 @@ public class PatrolState : IEnemyState
 
         if (hit && hit.collider.CompareTag("Player"))
         {
-            
+
             ToChaseState();
         }
     }
