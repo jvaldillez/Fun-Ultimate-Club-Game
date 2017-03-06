@@ -16,22 +16,22 @@ public class KOState : IEnemyState
 
     public void FixedUpdateState()
     {
-        throw new NotImplementedException();
+       // throw new NotImplementedException();
     }
 
     public void OnCollisionEnter2D(Collision2D coll)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     public void OnDrawGizmos()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     public void OnTriggerEnter2D(Collider2D coll)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     public void ToAlertState()
@@ -48,7 +48,7 @@ public class KOState : IEnemyState
 
     public void ToChaseState()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     public void ToDeadState()
@@ -58,12 +58,12 @@ public class KOState : IEnemyState
 
     public void ToKOState()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     public void ToPatrolState()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     public void UpdateState()

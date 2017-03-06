@@ -99,11 +99,11 @@ public class AlertState : IEnemyState {
 
     public void OnTriggerEnter2D(Collider2D coll)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     public void ToKOState()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }

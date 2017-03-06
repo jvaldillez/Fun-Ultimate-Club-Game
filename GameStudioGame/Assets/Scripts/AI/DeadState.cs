@@ -49,7 +49,7 @@ public class DeadState : IEnemyState
 
     public void ToAlertState()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
     public void OnDrawGizmos()
     {
@@ -58,10 +58,10 @@ public class DeadState : IEnemyState
 
     public void OnTriggerEnter2D(Collider2D coll)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
     public void ToKOState()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }
