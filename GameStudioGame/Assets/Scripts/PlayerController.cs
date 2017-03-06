@@ -104,7 +104,7 @@ public class PlayerController : CharacterTemplate {
             if (transform.position.y < bottomOfWorld)
             {
                 gameOver = true;
-                gameOverText.text = "Game Over\n Press Space to retry level";
+                gameOverText.text = "Game Over\n Press Space to retry level\n Souls Collected:" + soulCount.ToString();
             }
             setHealthBar();
             
@@ -114,7 +114,7 @@ public class PlayerController : CharacterTemplate {
                 animator.SetTrigger("playerDead");
                 playerDead = true;
                 gameOver = true;
-                gameOverText.text = "Game Over\n Press Space to retry level";
+                gameOverText.text = "Game Over\n Press Space to retry level\n Souls Collected:" + soulCount.ToString();
             }
 
             if (Mobile)
@@ -206,6 +206,7 @@ public class PlayerController : CharacterTemplate {
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                soulCount = 0;
             }
         }
         else if (!playerDead)
