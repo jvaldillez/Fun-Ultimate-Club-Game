@@ -33,7 +33,8 @@ public class AlertState : IEnemyState {
 
     public void ToAttackState()
     {
-        throw new NotImplementedException();
+        timer = 0f;
+        enemy.currentState = enemy.attackState;
     }
 
     public void ToChaseState()
@@ -71,6 +72,8 @@ public class AlertState : IEnemyState {
     void Look()
     {
         var dir = Vector3.Normalize(enemy.chaseTarget.position - enemy.transform.position);
+        if (Mathf.Sign(dir.x) != enemy.transform.right.x)
+            enemy.transform.right *= -1f;
 
         var hit = Physics2D.Raycast(enemy.transform.position,
             dir,
@@ -80,10 +83,14 @@ public class AlertState : IEnemyState {
             dir * lineOfSight,
             Color.magenta);
 
-        if (hit && hit.collider.tag == "Player")
+        if (hit && hit.collider.tag == "Player" )
         {
-            ToChaseState();
+            if (enemy.CheckForGround())
+                ToChaseState();
+            else if (Vector3.Distance(enemy.transform.position, hit.transform.position) < enemy.attackRadius)
+                ToAttackState();
         }
+       
     }
     public void OnDrawGizmos()
     {

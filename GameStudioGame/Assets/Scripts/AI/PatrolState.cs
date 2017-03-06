@@ -66,6 +66,8 @@ public class PatrolState : IEnemyState
     {
         var curWay = enemy.waypoints[enemy.currentWaypoint];
 
+       
+
         // once enemy reaches waypoint, pause for patrolTurnTime seconds before turning around
         if (Mathf.Abs(curWay.x - enemy.transform.position.x) < closeEnoughThreshold)
         {
@@ -80,8 +82,17 @@ public class PatrolState : IEnemyState
         }            
         else
         {
-            var diff = Mathf.Sign(curWay.x - enemy.transform.position.x);
+            // switch waypoints if run into wall or reach end of platform
+            if(!enemy.CheckForGround())
+            {
+                enemy.currentWaypoint = enemy.currentWaypoint == 1 ? 0 : 1;
+            }
+            
+            // move toward waypoint
+            var diff = Mathf.Sign(enemy.waypoints[enemy.currentWaypoint].x - enemy.transform.position.x);
             enemy.Move(diff);
+            
+          
         }
         
        
