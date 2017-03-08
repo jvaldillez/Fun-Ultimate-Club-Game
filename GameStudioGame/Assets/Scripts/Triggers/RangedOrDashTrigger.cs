@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class RangedOrDashTrigger : MonoBehaviour
 {
     public Text RangedOrDashText;
+    
     private bool activated;
     private bool playerInTrigger = false;
     private PlayerController player = null; 
@@ -14,24 +15,28 @@ public class RangedOrDashTrigger : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && !PlayerController.dashUnlocked && !PlayerController.rangedUnlocked)
         {
+            player.EnableIcon(player.rangedIcon);
             PlayerController.rangedUnlocked = true;
             activated = true;
             RangedOrDashText.text = "Ranged attack unlocked. Press W to use. \n To switch out ranged for dash press Z.";
         }
         else if (Input.GetKeyDown(KeyCode.X) && playerInTrigger && !PlayerController.dashUnlocked && !PlayerController.rangedUnlocked)
         {
+            player.EnableIcon(player.dashIcon);
             PlayerController.dashUnlocked = true;
             activated = true;
             RangedOrDashText.text = "Dash unlocked. Press W to use. \n To switch out dash for ranged press Z.";
         }
         else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && PlayerController.dashUnlocked)
         {
+            player.SwitchIcons(player.dashIcon, player.rangedIcon);
             PlayerController.dashUnlocked = false;
             PlayerController.rangedUnlocked = true;
             RangedOrDashText.text = "Ranged attack unlocked. Press W to use. \n To switch out ranged for dash press Z.";
         }
         else if (Input.GetKeyDown(KeyCode.Z) && playerInTrigger && PlayerController.rangedUnlocked)
         {
+            player.SwitchIcons(player.rangedIcon, player.dashIcon);
             PlayerController.rangedUnlocked = false;
             PlayerController.dashUnlocked = true;
             RangedOrDashText.text = "Dash unlocked. Press W to use. \n To switch out dash for ranged press Z.";
