@@ -23,7 +23,7 @@ public class Goal : MonoBehaviour
                 player.gameOver = true;
                 var playerRb = player.GetComponent<Rigidbody2D>();
                 playerRb.velocity = new Vector3(0, 0, 0);
-                gameOverText.text = "You won!\n Souls collected:" + PlayerController.soulCount.ToString();
+                gameOverText.text = "You won!\n Souls collected:" + PlayerController.soulCount.ToString() + "\nPress Esc to return to main menu";
             }
         }
     }
