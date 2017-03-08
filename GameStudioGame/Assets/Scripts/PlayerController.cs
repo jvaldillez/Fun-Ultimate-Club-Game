@@ -54,9 +54,12 @@ public class PlayerController : CharacterTemplate {
 
     // test icon
     public CoolDownTimer Qicon;
-    public CoolDownTimer Wicon;
-    public CoolDownTimer Eicon;
-    public CoolDownTimer Ricon;
+    public CoolDownTimer rangedIcon;
+    public CoolDownTimer dashIcon;
+    public CoolDownTimer siphonIcon;
+    public CoolDownTimer lightsOutIcon;
+    public CoolDownTimer handIcon;
+    public CoolDownTimer KOIcon;
 
     //Health slider
     public Slider healthBar;
@@ -93,6 +96,19 @@ public class PlayerController : CharacterTemplate {
         // initialize timers
         //meleeTimer = projectileTimer = siphonTimer = handTimer = 0f;
 
+        // initialize icons
+        if (rangedUnlocked)
+            EnableIcon(rangedIcon);
+        if (siphonUnlocked)
+            EnableIcon(siphonIcon);
+        if (zombieHandsUnlocked)
+            EnableIcon(handIcon);
+        if (dashUnlocked)
+            EnableIcon(dashIcon);
+        if (silenceUnlocked)
+            EnableIcon(lightsOutIcon);
+        if (chokeHoldUnlocked)
+            EnableIcon(KOIcon);
 
     }
 
@@ -139,11 +155,11 @@ public class PlayerController : CharacterTemplate {
                 // projectile
                 if (Input.GetButtonDown("Fire1") && rangedUnlocked)
                 {
-                    CastSpell(Projectile, ref projectileTimer, projectileCoolDown, rangedUnlocked, throwing, Wicon);
+                    CastSpell(Projectile, ref projectileTimer, projectileCoolDown, rangedUnlocked, throwing, rangedIcon);
                 }
                 else if (Input.GetButtonDown("Fire1") && dashUnlocked && Time.time >= dashTimer)
                 {
-                    Wicon.Spin(dashCoolDown);
+                    dashIcon.Spin(dashCoolDown);
                     dash = true;
                     animator.SetTrigger(running);
                     dashTimer = Time.time + dashCoolDown;
@@ -152,21 +168,21 @@ public class PlayerController : CharacterTemplate {
                 // siphon
                 if (Input.GetButtonDown("Fire2") && grounded && siphonUnlocked)
                 {
-                    CastSpell(siphon, ref siphonTimer, siphonCoolDown, siphonUnlocked, idling, Eicon);
+                    CastSpell(siphon, ref siphonTimer, siphonCoolDown, siphonUnlocked, idling, siphonIcon);
                 }
                 else if (Input.GetButtonDown("Fire2") && silenceUnlocked)
                 {
-                    CastSpell(SilenceAlert, ref silenceTimer, silenceCoolDown, silenceUnlocked, throwing, Eicon);
+                    CastSpell(SilenceAlert, ref silenceTimer, silenceCoolDown, silenceUnlocked, throwing, lightsOutIcon);
                 }
 
                 // hand
                 if (Input.GetButtonDown("Fire3") && zombieHandsUnlocked)
                 {
-                    CastSpell(ZombieHands, ref handTimer, handCoolDown, zombieHandsUnlocked, throwing, Ricon);
+                    CastSpell(ZombieHands, ref handTimer, handCoolDown, zombieHandsUnlocked, throwing, handIcon);
                 }
                 else if (Input.GetButtonDown("Fire3") && chokeHoldUnlocked)
                 {
-                    CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing, Ricon);
+                    CastSpell(ChokeHold, ref chokeHoldTimer, chokeHoldCoolDown, chokeHoldUnlocked, meleeing, KOIcon);
                 }
 
                 //// dash
@@ -355,5 +371,16 @@ public class PlayerController : CharacterTemplate {
     {
         var timeRemaining = timer - Time.time;
         return timeRemaining > 0f ? Mathf.Ceil(timeRemaining) : 0; 
+    }
+
+    public void SwitchIcons(CoolDownTimer from, CoolDownTimer to)
+    {
+        from.GetComponent<Image>().enabled = false;
+        to.GetComponent<Image>().enabled = true;
+    }
+
+    public void EnableIcon(CoolDownTimer icon)
+    {
+        icon.GetComponent<Image>().enabled = true;
     }
 }
