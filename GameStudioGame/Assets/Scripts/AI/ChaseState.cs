@@ -80,6 +80,7 @@ public class ChaseState : IEnemyState
         var diff = enemy.chaseTarget.position.x - enemy.transform.position.x;
         // dont spin when player is above enemy
         diff = Mathf.Abs(diff) < minTurnDist ? 0f : Mathf.Sign(diff);
+        diff = diff * 1.5f;
         enemy.Move(diff);
         
          
