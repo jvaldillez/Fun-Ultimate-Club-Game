@@ -128,7 +128,7 @@ public class Enemy : CharacterTemplate {
     public bool CheckForGround()
     {
         var direc = -transform.up + transform.right;
-        Debug.DrawRay(transform.position, direc, Color.green);
+        Debug.DrawRay(transform.position, direc * 1f, Color.green);
         var hit = Physics2D.Raycast(transform.position, direc, 1f, 1 << LayerMask.NameToLayer("Ground"));
         return (hit &&
             hit.collider.tag == "Ground");
